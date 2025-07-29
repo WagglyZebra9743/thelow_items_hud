@@ -1,0 +1,2 @@
+# thelow_items_hud
+thelowで手に持っているアイテムを表示するmod
