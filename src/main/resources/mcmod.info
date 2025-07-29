@@ -1,0 +1,16 @@
+[
+{
+  "modid": "thelow_items_hud",
+  "name": "thelow items hud",
+  "description": "\u624b\u306b\u6301\u3063\u3066\u3044\u308b\u30a2\u30a4\u30c6\u30e0\u306e\u8a73\u7d30\u3092\u8868\u793a",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["WagglyZebra9743"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
