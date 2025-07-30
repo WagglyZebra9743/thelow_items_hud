@@ -21,13 +21,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class thelow_item_hudHUD extends Gui {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
-    private static ItemStack currentitem = null;
     
     public static void register() {
         MinecraftForge.EVENT_BUS.register(new thelow_item_hudHUD());
     }
 
     private static String pskillname = null;
+    private static Long itemseed = 0L;
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Text event) {
         if (mc.thePlayer == null || mc.theWorld == null) return;//プレイヤーまたはワールドがない場合は実行しない
@@ -37,19 +37,25 @@ public class thelow_item_hudHUD extends Gui {
         
         if(holdingItems==null)return;//何も持っていないから終わり
         
-        if(holdingItems.getTagCompound()==null)return;//タグがないから終わり
+        if(holdingItems.getTagCompound()==null||!holdingItems.hasTagCompound())return;//タグがないから終わり
         
-        if(currentitem == null || holdingItems != currentitem) {
-        	currentitem = holdingItems;
-        	timer.EisyouReset();
-        	timer.YamikaihouReset();
-        	timer.EsuReset();
-        }
         
         NBTTagCompound nbt = holdingItems.getTagCompound();
         
         
-        if (!nbt.hasKey("thelow_item_id"))return;//idがないなら終わり
+        if (!nbt.hasKey("thelow_item_id")) return;//idがないなら終わり
+        
+        if (nbt.hasKey("thelow_item_seed_value", 4)) { // 4 = Long型
+            long seed = nbt.getLong("thelow_item_seed_value");
+            // seed の変化を検知してトリガー
+            if(itemseed == 0L || itemseed != seed) {
+            	itemseed = seed;
+            	timer.EisyouReset();
+            	timer.YamikaihouReset();
+            	timer.EsuReset();
+            	System.out.println("itemchanged");
+            }
+        }
         
         String itemName = null;
         
@@ -90,7 +96,11 @@ public class thelow_item_hudHUD extends Gui {
             	
             }
         }
-        if(item_type == ""||item_type == null || item_type.isEmpty())return;
+        if(item_type == ""||item_type == null || item_type.isEmpty()) {
+        	timer.EsuReset();
+        	System.out.println("donothavewepon");
+        	return;
+        }
 
         
         
@@ -165,7 +175,13 @@ public class thelow_item_hudHUD extends Gui {
         	if(sskillname.equals("覚醒")){
         		if(skill.kaihou) {
         			sskillname = "§a"+sskillname+"§r";
-        		}else sskillname = "§8"+sskillname+"§r";
+        		}else {
+        			sskillname = "§8"+sskillname+"§r";
+        			int time = timer.Kaihoutimer();
+        			if(time!=0) {
+        				sskillname = sskillname + time + "秒";
+        			}
+        		}
         	}
         }
         
@@ -175,7 +191,13 @@ public class thelow_item_hudHUD extends Gui {
         	if(nskillname.equals("開放")) {
         		if(skill.yochou) {
         			nskillname = "§a"+nskillname+"§r";
-        		}else nskillname = "§8"+nskillname+"§r";
+        		}else {
+        			nskillname = "§8"+nskillname+"§r";
+        			int time = timer.Yochoutimer();
+        			if(time!=0) {
+        				nskillname = nskillname + time +"秒";
+        			}
+        		}
         	}
         }
         
@@ -187,16 +209,41 @@ public class thelow_item_hudHUD extends Gui {
         	if(pskillname.equals("闇の解放")) {
         		if(skill.yamikaihou) {
         			pskillnameshow = "§a"+pskillname+"§r";
-        		}else pskillnameshow = "§8"+pskillname+"§r";
+        		}else {
+        			pskillnameshow = "§8"+pskillname+"§r";
+        			int time = timer.Yamikaihoutimer();
+        			if(time!=0) {
+        				pskillnameshow = pskillnameshow + time + "秒";
+        			}
+        			
+        		}
         	}else if(pskillname.equals("エース")) {
         		if(skill.esu) {
         			pskillnameshow = "§a"+pskillname+"§r";
-        		}else pskillnameshow = "§8"+pskillname+"§r";
+        		}else {
+        			pskillnameshow = "§8"+pskillname+"§r";
+        			int time = timer.Esutimer();
+        			if(time!=0) {
+        				pskillnameshow = pskillnameshow + time + "秒";
+        			}
+        			
+        		}
         	}else if(pskillname.equals("詠唱")) {
         		if(skill.eisyou) {
         			pskillnameshow = "§a"+pskillname+"§r";
-        		}else pskillnameshow = "§8"+pskillname+"§r";
-        	}else pskillnameshow = pskillname;
+        		}else {
+        			pskillnameshow = "§8"+pskillname+"§r";
+        			int time = timer.Eisyoutimer();
+        			if(time!=0) {
+        				pskillnameshow = pskillnameshow + time + "秒";
+        			}
+        			
+        		}
+        	}else {
+        		pskillnameshow = pskillname;
+        		timer.EisyouReset();
+        		System.out.println("noteisyou");
+        	}
         }
         
         

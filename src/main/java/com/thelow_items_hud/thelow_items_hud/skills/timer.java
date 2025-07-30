@@ -101,11 +101,27 @@ public class timer {
 		}else return;
 	}
 	
+	public static int Yochoutimer() {
+		int timer = yochouTimer;
+		if(timer==-1)return 0;
+		timer/=20;
+		timer = 30 - timer;
+		return timer;
+	}
+	
 	public static void Kaihou() {
 		if(kaihouTimer==-1) {
 	    kaihouTimer = 0;  // カウント開始
 	    skill.kaihou = false; // リセット
 		}else return;
+	}
+	
+	public static int Kaihoutimer() {
+		int timer = kaihouTimer;
+		if(timer==-1)return 0;
+		timer/=20;
+		timer = 30 - timer;
+		return timer;
 	}
 	
 	public static void Yamikaihou() {
@@ -116,6 +132,14 @@ public class timer {
 	public static void YamikaihouReset() {
 		yamikaihouTimer = -1;
 		skill.yamikaihou = false;
+	}
+	
+	public static int Yamikaihoutimer() {
+		int timer = yamikaihouTimer;
+		if(timer==-1)return 0;
+		timer/=20;
+		timer = 6 - timer;
+		return timer;
 	}
 
 	public static void Esu() {
@@ -129,6 +153,14 @@ public class timer {
 		skill.esu = false;
 	}
 	
+	public static int Esutimer() {
+		int timer = esuTimer;
+		if(timer==-1)return 0;
+		timer/=20;
+		timer = 6 - timer;
+		return timer;
+	}
+	
 	public static void Eisyou() {
 		if(eisyouTimer==-1&&!skill.eisyou) {
 			eisyouTimer = 0;
@@ -138,6 +170,14 @@ public class timer {
 	public static void EisyouReset() {
 		eisyouTimer = -1;
 		skill.eisyou = false;
+	}
+	
+	public static int Eisyoutimer() {
+		int timer = eisyouTimer;
+		if(timer==-1)return 0;
+		timer/=20;
+		timer = 10 - timer;
+		return timer;
 	}
 
 }

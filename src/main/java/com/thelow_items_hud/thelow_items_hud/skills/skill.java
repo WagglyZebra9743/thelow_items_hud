@@ -7,6 +7,7 @@ import com.thelow_items_hud.thelow_items_hud.hud.thelow_item_hudHUD;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class skill {
+	private static final Minecraft mc = Minecraft.getMinecraft();
 	private static Map<String, String> skillMap = new HashMap<>();
 	static {
 		//武器固有スキルby wiki
@@ -233,7 +235,8 @@ public class skill {
 	public static boolean yamikaihou = false;
 	public static boolean esu = false;
 	public static boolean eisyou = false;
-
+	
+	private boolean AttackKeyDown = false;
 	
 	public static String getsp(NBTTagCompound nbt) {
 		if (nbt.hasKey("thelow_item_weapon_skill_special_skill")) {//スキルデータがあるかをチェック
@@ -293,7 +296,7 @@ public class skill {
 	
 	@SubscribeEvent
 	public void onAttackEntity(AttackEntityEvent  event) {
-	    if (event.entityPlayer == Minecraft.getMinecraft().thePlayer) {
+	    if (event.entityPlayer == mc.thePlayer) {
 	    	String skillname = thelow_item_hudHUD.Getpskillname();
 	    	if(skillname!=null) {
 	    		System.out.println("attaked");
@@ -312,19 +315,38 @@ public class skill {
 	    }
 	}
 	@SubscribeEvent
-	public void onClientTick(TickEvent.ClientTickEvent event) { // 1tickに1回だけ
-		if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("詠唱")){
-	        if (Minecraft.getMinecraft().gameSettings.keyBindAttack.isPressed()) {
-	        	timer.EisyouReset();
-	        	System.out.println("magicd");
-	        	
-	        }
+	public void onClientTick(TickEvent.ClientTickEvent event) {
+	    if (event.phase != TickEvent.Phase.END) return;
+
+	    
+	    KeyBinding attackKey = mc.gameSettings.keyBindAttack;
+
+	    // 攻撃キーが押された瞬間だけ
+	    if (attackKey.isKeyDown() && !AttackKeyDown) {
+	        AttackKeyDown = true;
+	        onAttackKeyPressed();
+	    }
+
+	    // キーが離されたらフラグを戻す
+	    if (!attackKey.isKeyDown()) {
+	        AttackKeyDown = false;
+	        
 	    }
 	}
+
+	private void onAttackKeyPressed() {
+	    // 攻撃キーを押した瞬間に実行したい処理
+		if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("詠唱")) {
+    		timer.EisyouReset();
+    		
+    		System.out.println("magicd");
+    	}
+	}
+
 	
 	@SubscribeEvent
 	public void onDamage(LivingHurtEvent event) {
-	    EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+	    EntityPlayerSP player = mc.thePlayer;
 	    if (event.entity == player) {
 	    	if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("エース")) {
 	    		timer.EsuReset();
@@ -348,5 +370,6 @@ public class skill {
 	        }
 	    }
 	}
+	
 	
 }
