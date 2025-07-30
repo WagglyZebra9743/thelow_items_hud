@@ -55,6 +55,11 @@ public class thelow_item_hudHUD extends Gui {
             	timer.EsuReset();
             	System.out.println("itemchanged");
             }
+        }else {
+        	timer.EisyouReset();
+        	timer.YamikaihouReset();
+        	timer.EsuReset();
+        	System.out.println("nothaveseed");
         }
         
         String itemName = null;
