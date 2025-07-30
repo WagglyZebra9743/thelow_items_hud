@@ -39,6 +39,10 @@ public class APIListener {
                         if(skillname.equals("覚醒")) {
                         	skill.kaihou = false;
                         }
+                        if(skillname.equals("マジックボール")||skillname.equals("ライトニングボルト")||skillname.equals("メテオストライク")) {
+                        	timer.EisyouReset();
+                        	System.out.println("skillused");
+                        }
                         skillname=null;
                         }
                     }

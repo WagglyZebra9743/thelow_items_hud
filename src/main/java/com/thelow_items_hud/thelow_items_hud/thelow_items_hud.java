@@ -33,5 +33,7 @@ public class thelow_items_hud {
         MinecraftForge.EVENT_BUS.register(new ChatFilter());
         MinecraftForge.EVENT_BUS.register(new timer());
         MinecraftForge.EVENT_BUS.register(new skill());
+        
+        
     }
 }

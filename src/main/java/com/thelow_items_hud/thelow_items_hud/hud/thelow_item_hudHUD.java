@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.thelow_items_hud.thelow_items_hud.config.ConfigHandler;
 import com.thelow_items_hud.thelow_items_hud.skills.skill;
+import com.thelow_items_hud.thelow_items_hud.skills.timer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -20,6 +21,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class thelow_item_hudHUD extends Gui {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
+    private static ItemStack currentitem = null;
     
     public static void register() {
         MinecraftForge.EVENT_BUS.register(new thelow_item_hudHUD());
@@ -30,10 +32,19 @@ public class thelow_item_hudHUD extends Gui {
     public void onRenderGameOverlay(RenderGameOverlayEvent.Text event) {
         if (mc.thePlayer == null || mc.theWorld == null) return;//プレイヤーまたはワールドがない場合は実行しない
         ItemStack holdingItems = mc.thePlayer.getHeldItem();
-
+        
+        
+        
         if(holdingItems==null)return;//何も持っていないから終わり
         
         if(holdingItems.getTagCompound()==null)return;//タグがないから終わり
+        
+        if(currentitem == null || holdingItems != currentitem) {
+        	holdingItems = currentitem;
+        	timer.EisyouReset();
+        	timer.YamikaihouReset();
+        	timer.EsuReset();
+        }
         
         NBTTagCompound nbt = holdingItems.getTagCompound();
         
@@ -170,7 +181,7 @@ public class thelow_item_hudHUD extends Gui {
         
         
         String pskill = skill.getpa(nbt);
-        pskillname = skill.getname(pskill);
+        pskillname = skill.getpskillname(pskill);
         String pskillnameshow = null;
         if(pskillname!=null) {
         	if(pskillname.equals("闇の解放")) {
@@ -179,6 +190,10 @@ public class thelow_item_hudHUD extends Gui {
         		}else pskillnameshow = "§8"+pskillname+"§r";
         	}else if(pskillname.equals("エース")) {
         		if(skill.esu) {
+        			pskillnameshow = "§a"+pskillname+"§r";
+        		}else pskillnameshow = "§8"+pskillname+"§r";
+        	}else if(pskillname.equals("詠唱")) {
+        		if(skill.eisyou) {
         			pskillnameshow = "§a"+pskillname+"§r";
         		}else pskillnameshow = "§8"+pskillname+"§r";
         	}else pskillnameshow = pskillname;
@@ -215,23 +230,23 @@ public class thelow_item_hudHUD extends Gui {
 
         // stones[x]をappendする際にString.format()で書式を指定
         if (stones[0] != 1) {
-        	text2Builder.append("ゾン×").append(String.format("%.3f", stones[0]));
+        	text2Builder.append("§5§lゾン×").append(String.format("%.3f", stones[0])).append("§r");
         }
         if (stones[1] != 1) {
         	if (text2Builder.length() > 0) text2Builder.append(",");
-        	text2Builder.append("スケ×").append(String.format("%.3f", stones[1]));
+        	text2Builder.append("§f§lスケ×").append(String.format("%.3f", stones[1])).append("§r");
         }
         if (stones[2] != 1) {
         	if (text2Builder.length() > 0) text2Builder.append(",");
-        	text2Builder.append("生物×").append(String.format("%.3f", stones[2]));
+        	text2Builder.append("§a§l生物×").append(String.format("%.3f", stones[2])).append("§r");
         }
         if (stones[3] != 100) {
         	if (text2Builder.length() > 0) text2Builder.append(",");
-        	text2Builder.append("CT").append(String.format("%.2f", stones[3])).append("%");
+        	text2Builder.append("§3§lCT").append(String.format("%.2f", stones[3])).append("%§r");
         }
         if (stones[4] != 0) {
         	if (text2Builder.length() > 0) text2Builder.append(",");
-        	text2Builder.append("ポシ+").append(String.format("%.2f", stones[4]));
+        	text2Builder.append("§d§lポシ+").append(String.format("%.2f", stones[4])).append("§r");
         }
 
         String text2 = text2Builder.toString();

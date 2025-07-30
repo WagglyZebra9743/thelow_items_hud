@@ -3,6 +3,8 @@ package com.thelow_items_hud.thelow_items_hud.skills;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.thelow_items_hud.thelow_items_hud.hud.thelow_item_hudHUD;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,6 +12,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class skill {
 	private static Map<String, String> skillMap = new HashMap<>();
@@ -229,6 +232,7 @@ public class skill {
 	public static boolean kaihou = false;
 	public static boolean yamikaihou = false;
 	public static boolean esu = false;
+	public static boolean eisyou = false;
 
 	
 	public static String getsp(NBTTagCompound nbt) {
@@ -262,6 +266,11 @@ public class skill {
 	}
 	public static String getname(String skill) {
 		String skillname = skillMap.getOrDefault(skill,null);
+		return skillname;
+	}
+	
+	public static String getpskillname(String skill) {
+		String skillname = skillMap.getOrDefault(skill,null);
 		if(skillname==null)return null;
 		if(skillname.equals("闇の解放")) {
 			timer.Yamikaihou();
@@ -273,15 +282,43 @@ public class skill {
 		}else {
 			timer.EsuReset();
 		}
+		if(skillname.equals("詠唱")) {
+			timer.Eisyou();
+		}else {
+			timer.EisyouReset();
+			System.out.println("noteisyou");
+		}
 		return skillname;
 	}
+	
 	@SubscribeEvent
 	public void onAttackEntity(AttackEntityEvent  event) {
 	    if (event.entityPlayer == Minecraft.getMinecraft().thePlayer) {
-
-				timer.YamikaihouReset();
-				timer.EsuReset();
-			System.out.println("attackd");
+	    	String skillname = thelow_item_hudHUD.Getpskillname();
+	    	if(skillname!=null) {
+	    		System.out.println("attaked");
+	    		switch (skillname) {
+	    		case "闇の解放":{
+	    			timer.YamikaihouReset();
+	    			break;
+	    			}
+	    		case "エース":{
+	    			timer.EsuReset();
+	    			break;
+	    			}
+	    		}
+	    	}
+				
+	    }
+	}
+	@SubscribeEvent
+	public void onClientTick(TickEvent.ClientTickEvent event) { // 1tickに1回だけ
+		if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("詠唱")){
+	        if (Minecraft.getMinecraft().gameSettings.keyBindAttack.isPressed()) {
+	        	timer.EisyouReset();
+	        	System.out.println("magicd");
+	        	
+	        }
 	    }
 	}
 	
@@ -289,24 +326,25 @@ public class skill {
 	public void onDamage(LivingHurtEvent event) {
 	    EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 	    if (event.entity == player) {
-	    	
-	    			timer.EsuReset();
-	    			
-	    			System.out.println("damaged");
+	    	if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("エース")) {
+	    		timer.EsuReset();
+	    		
+	    		System.out.println("damaged");
+	    	}
 	    }
 	}
 	@SubscribeEvent
 	public void onActionBar(ClientChatReceivedEvent event) {
-		
-    			// アクションバーかどうか判定
+		if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("エース")) {
+    			// アクションバーがボス判定かどうか判定
     			if (event.type == 2) { // 2 = アクションバー
     				String text = event.message.getUnformattedText();
 	        
-    				// ボス名の判定
+    				// ボス名判定
     			if (text.contains("§c【")) {
     				timer.EsuReset();
     				System.out.println("VSboss");
-    			
+    			}
 	        }
 	    }
 	}

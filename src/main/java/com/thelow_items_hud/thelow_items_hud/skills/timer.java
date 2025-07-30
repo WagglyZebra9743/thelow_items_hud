@@ -1,5 +1,7 @@
 package com.thelow_items_hud.thelow_items_hud.skills;
 
+import com.thelow_items_hud.thelow_items_hud.hud.thelow_item_hudHUD;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.BlockPos;
@@ -11,6 +13,7 @@ public class timer {
 	private static int kaihouTimer = -1;
 	private static int yamikaihouTimer = -1;
 	private static int esuTimer = -1;
+	private static int eisyouTimer = -1;
 	private static BlockPos lastPos = null;
 	private static final Minecraft mc = Minecraft.getMinecraft();
 	@SubscribeEvent
@@ -35,7 +38,6 @@ public class timer {
 	    }
 	    if (yamikaihouTimer >= 0) {
 	        yamikaihouTimer++;
-	        System.out.println("yami:"+yamikaihouTimer);
 	        // 6秒経過で発動
 	        if (yamikaihouTimer >= 6 * 20) {
 	            skill.yamikaihou = true; // 使用可能
@@ -46,7 +48,6 @@ public class timer {
 	    
 	    if (esuTimer >= 0) {
 	        esuTimer++;
-	        System.out.println("esu:"+esuTimer);
 
 	        // 6秒経過で発動
 	        if (esuTimer >= 6 * 20) {
@@ -54,30 +55,41 @@ public class timer {
 	            esuTimer = -1;    // タイマー停止
 	        }
 	    }
+	    if(eisyouTimer >= 0) {
+	    	eisyouTimer++;
+	    	System.out.println("eisyou:"+eisyouTimer);
+	    	//10秒経過で実行
+	    	if(eisyouTimer >=10*20) {
+	    		skill.eisyou = true;
+	    		eisyouTimer = -1;
+	    	}
+	    }
 	}
 	
 	@SubscribeEvent
 	public void Esuchek(TickEvent.ClientTickEvent event) {
 		if (mc.thePlayer == null || mc.theWorld == null) return;
-		EntityPlayerSP player = mc.thePlayer;
+		if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("エース")) {
+			EntityPlayerSP player = mc.thePlayer;
 	    
-	    BlockPos currentPos = player.getPosition();
-	    if (lastPos == null) {
-	        lastPos = currentPos;
-	        return;
-	    }
-	    if (lastPos != null && !currentPos.equals(lastPos)) {
-	    	EsuReset();
-			System.out.println("moved");
-			lastPos = currentPos;
-			return;
-	    }
+	    	BlockPos currentPos = player.getPosition();
+	    	if (lastPos == null) {
+	        	lastPos = currentPos;
+	        	return;
+	    	}
+	    	if (lastPos != null && !currentPos.equals(lastPos)) {
+	    		EsuReset();
+				System.out.println("moved");
+				lastPos = currentPos;
+				return;
+	    	}
 	    
 	    
-	    if (player.getFoodStats().getFoodLevel() == 0) {
-	    	EsuReset();
-			System.out.println("hungerd");
-	        return;
+	    	if (player.getFoodStats().getFoodLevel() == 0) {
+	    		EsuReset();
+				System.out.println("hungerd");
+	        	return;
+	    	}
 	    }
 	    
 	}
@@ -117,5 +129,15 @@ public class timer {
 		skill.esu = false;
 	}
 	
+	public static void Eisyou() {
+		if(eisyouTimer==-1&&!skill.eisyou) {
+			eisyouTimer = 0;
+		}
+	}
+	
+	public static void EisyouReset() {
+		eisyouTimer = -1;
+		skill.eisyou = false;
+	}
 
 }
