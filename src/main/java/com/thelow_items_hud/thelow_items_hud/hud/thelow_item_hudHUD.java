@@ -40,7 +40,7 @@ public class thelow_item_hudHUD extends Gui {
         if(holdingItems.getTagCompound()==null)return;//タグがないから終わり
         
         if(currentitem == null || holdingItems != currentitem) {
-        	holdingItems = currentitem;
+        	currentitem = holdingItems;
         	timer.EisyouReset();
         	timer.YamikaihouReset();
         	timer.EsuReset();

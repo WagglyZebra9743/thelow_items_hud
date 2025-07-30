@@ -46,7 +46,6 @@ public class APIListener {
                         skillname=null;
                         }
                     }
-                    Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(apiType));
                 } catch (Exception e) {
                     Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("§a[thelow_items_hud]§c 解析失敗: " + e.getMessage()));
                 }
