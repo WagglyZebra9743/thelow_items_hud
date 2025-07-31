@@ -16,8 +16,13 @@ public class APIListener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChat(ClientChatReceivedEvent event) {
-        String msg = event.message.getUnformattedText();
+        String colormsg = event.message.getFormattedText();
+        if(colormsg.equals(" §r§a正常にプレイヤーデータをロードしました。§r")) {
+        	timer.Reconnected();
+        }
 
+        String msg = event.message.getUnformattedText();
+        
         if (msg.startsWith("$api")) {
             String[] split = msg.split(" ", 2);
             if (split.length == 2) {
@@ -26,9 +31,7 @@ public class APIListener {
                     String apiType = json.get("apiType").getAsString();
                     if ("skill_cooltime".equals(apiType)) {
                         JsonObject response = json.getAsJsonObject("response");
-                        System.out.println(response);
                         String skillname = response.get("name").getAsString();
-                        System.out.println("skill:"+skillname);
                         if(skillname!=null) {
                         if(skillname.equals("予兆")) {
                         	timer.Yochou();
@@ -41,7 +44,6 @@ public class APIListener {
                         }
                         if(skillname.equals("マジックボール")||skillname.equals("ライトニングボルト")||skillname.equals("ファイヤ・ボルケーノ")||skillname.equals("メテオストライク")) {
                         	timer.EisyouReset();
-                        	System.out.println("skillused");
                         }
                         skillname=null;
                         }

@@ -28,6 +28,10 @@ public class thelow_item_hudHUD extends Gui {
 
     private static String pskillname = null;
     private static Long itemseed = 0L;
+    private static String[] stone_type = {"zombie_attackLEVEL","skeleton_attackLEVEL","living_attackLEVEL","reduce_cooltime_magic_stoneLEVEL","add_mp_magicstoneLEVEL"};
+    private static double[] attak_par = {1.1,1.15,1.23,1.35,1.55};
+    private static double[] cas_par = {0.95,0.9,0.84,0.77,0.6};
+    private static double[] pos_ev = {0.05,0.1,0.15,0.3,0.5};
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Text event) {
         if (mc.thePlayer == null || mc.theWorld == null) return;//プレイヤーまたはワールドがない場合は実行しない
@@ -35,16 +39,31 @@ public class thelow_item_hudHUD extends Gui {
         
         
         
-        if(holdingItems==null)return;//何も持っていないから終わり
+        if(holdingItems==null) {
+        	timer.YamikaihouReset();
+        	timer.EsuReset();
+        	timer.EisyouReset();
+        	return;//何も持っていないから終わり
+        }
         
         
-        if(holdingItems.getTagCompound()==null||!holdingItems.hasTagCompound())return;//タグがないから終わり
+        if(holdingItems.getTagCompound()==null||!holdingItems.hasTagCompound()) {
+        	timer.YamikaihouReset();
+        	timer.EsuReset();
+        	timer.EisyouReset();
+        	return;//タグがないから終わり
+        }
         
         
         NBTTagCompound nbt = holdingItems.getTagCompound();
         
         
-        if (!nbt.hasKey("thelow_item_id")) return;//idがないなら終わり
+        if (!nbt.hasKey("thelow_item_id")) {
+        	timer.YamikaihouReset();
+        	timer.EsuReset();
+        	timer.EisyouReset();
+        	return;//idがないなら終わり
+        }
         
         if (nbt.hasKey("thelow_item_seed_value", 4)) { // 4 = Long型
             long seed = nbt.getLong("thelow_item_seed_value");
@@ -54,13 +73,11 @@ public class thelow_item_hudHUD extends Gui {
             	timer.EisyouReset();
             	timer.YamikaihouReset();
             	timer.EsuReset();
-            	System.out.println("itemchanged");
             }
         }else {
         	timer.EisyouReset();
         	timer.YamikaihouReset();
         	timer.EsuReset();
-        	System.out.println("nothaveseed");
         }
         
         String itemName = null;
@@ -72,10 +89,15 @@ public class thelow_item_hudHUD extends Gui {
                 
             }
         }
+        if(itemName==null || itemName=="") {
+        	timer.YamikaihouReset();
+        	timer.EsuReset();
+        	timer.EisyouReset();
+        	return;
+        }
         
         
         
-        String item_type = "";
         List<String> lore = new ArrayList<>();
         
         if (nbt.hasKey("display", 10)) { // 10 = NBTTagCompound
@@ -87,6 +109,23 @@ public class thelow_item_hudHUD extends Gui {
                 }
             }
         }
+        if(itemName!=null&&!itemName.isEmpty()) HUD_render(itemName,0);
+        
+        if(itemName!=null&&itemName.contains("メモ")) {
+        	int di0 = 13;
+        	for(int i=0;i<lore.size();i++) {
+        		String loretext = lore.get(i).replaceAll("§.", "");;
+        		
+        		if(loretext!=null&&!loretext.equals(" ")&&!loretext.equals("")&&!loretext.contains("のみ使用可能です。")) {
+        		HUD_render(lore.get(i),i*13+di0);
+        		}else {
+        			di0 -= 13;
+        			continue;
+        		}
+        	}return;
+        }
+        
+        String item_type = "";
         
         for (String line : lore) {
             if (line.contains("以上")) {
@@ -103,8 +142,9 @@ public class thelow_item_hudHUD extends Gui {
             }
         }
         if(item_type == ""||item_type == null || item_type.isEmpty()) {
+        	timer.YamikaihouReset();
         	timer.EsuReset();
-        	System.out.println("donothavewepon");
+        	timer.EisyouReset();
         	return;
         }
 
@@ -116,17 +156,8 @@ public class thelow_item_hudHUD extends Gui {
         if (nbt.hasKey("thelow_avaliable_level")) {//レベルデータがあるかをチェック
         	level = (int) nbt.getShort("thelow_avaliable_level");//levelに格納
         }
-        /*ゾンビ特攻LV5 → zombie_attackLEVEL5
-		スケルトン特攻LV4.5 → skeleton_attackLEVEL4_5
-		生物特攻LV5 → living_attackLEVEL5
-		キャスターLV4.5 → reduce_cooltime_magic_stoneLEVEL4_5
-		ポーシングLV5 → add_mp_magicstoneLEVEL5*/
-        String[] stone_type = {"zombie_attackLEVEL","skeleton_attackLEVEL","living_attackLEVEL","reduce_cooltime_magic_stoneLEVEL","add_mp_magicstoneLEVEL"};
-        /*int ske_stone = 1 , zon_stone = 1 , live_stone = 1 , pos_stone = 0 , cas_stone = 0 ; */  
+        
         double[] stones = {1,1,1,100,0};
-        double[] attak_par = {1.1,1.15,1.23,1.35,1.55};
-        double[] cas_par = {0.95,0.9,0.84,0.77,0.6};
-        double[] pos_ev = {0.05,0.1,0.15,0.3,0.5};
         if(nbt.hasKey("thelow_item_slot_list")) {//魔法石スロットがあるか
         	String slot_text_data = nbt.getString("thelow_item_slot_list");//それをStringで取得
         	String[] slots = slot_text_data.split(",");
@@ -212,44 +243,49 @@ public class thelow_item_hudHUD extends Gui {
         pskillname = skill.getpskillname(pskill);
         String pskillnameshow = null;
         if(pskillname!=null) {
-        	if(pskillname.equals("闇の解放")) {
-        		if(skill.yamikaihou) {
-        			pskillnameshow = "§a"+pskillname+"§r";
-        		}else {
-        			pskillnameshow = "§8"+pskillname+"§r";
-        			int time = timer.Yamikaihoutimer();
-        			if(time!=0) {
-        				pskillnameshow = pskillnameshow + time + "秒";
-        			}
-        			
-        		}
-        	}else if(pskillname.equals("エース")) {
-        		if(skill.esu) {
-        			pskillnameshow = "§a"+pskillname+"§r";
-        		}else {
-        			pskillnameshow = "§8"+pskillname+"§r";
-        			int time = timer.Esutimer();
-        			if(time!=0) {
-        				pskillnameshow = pskillnameshow + time + "秒";
-        			}
-        			
-        		}
-        	}else if(pskillname.equals("詠唱")) {
-        		if(skill.eisyou) {
-        			pskillnameshow = "§a"+pskillname+"§r";
-        		}else {
-        			pskillnameshow = "§8"+pskillname+"§r";
-        			int time = timer.Eisyoutimer();
-        			if(time!=0) {
-        				pskillnameshow = pskillnameshow + time + "秒";
-        			}
-        			
-        		}
-        	}else {
-        		pskillnameshow = pskillname;
-        		timer.EisyouReset();
-        		System.out.println("noteisyou");
-        	}
+        	switch (pskillname) {
+            case "闇の解放":
+                if (skill.yamikaihou) {
+                    pskillnameshow = "§a" + pskillname + "§r";
+                } else {
+                    pskillnameshow = "§8" + pskillname + "§r";
+                    int time = timer.Yamikaihoutimer();
+                    if (time != 0) {
+                        pskillnameshow += time + "秒";
+                    }
+                }
+                break;
+
+            case "エース":
+                if (skill.esu) {
+                    pskillnameshow = "§a" + pskillname + "§r";
+                } else {
+                    pskillnameshow = "§8" + pskillname + "§r";
+                    int time = timer.Esutimer();
+                    if (time != 0) {
+                        pskillnameshow += time + "秒";
+                    }
+                }
+                break;
+
+            case "詠唱":
+                if (skill.eisyou) {
+                    pskillnameshow = "§a" + pskillname + "§r";
+                } else {
+                    pskillnameshow = "§8" + pskillname + "§r";
+                    int time = timer.Eisyoutimer();
+                    if (time != 0) {
+                        pskillnameshow += time + "秒";
+                    }
+                }
+                break;
+
+            default:
+                pskillnameshow = pskillname;
+                timer.EisyouReset();
+                break;
+        }
+
         }
         
         
@@ -304,7 +340,6 @@ public class thelow_item_hudHUD extends Gui {
 
         String text2 = text2Builder.toString();
     
-        if(itemName!=null&&!itemName.isEmpty()) HUD_render(itemName,0);
         
         HUD_render(text,13);
      

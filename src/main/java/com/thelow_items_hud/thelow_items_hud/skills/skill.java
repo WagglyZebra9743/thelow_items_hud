@@ -289,17 +289,15 @@ public class skill {
 			timer.Eisyou();
 		}else {
 			timer.EisyouReset();
-			System.out.println("noteisyou");
 		}
 		return skillname;
 	}
-	
+	//攻撃判定
 	@SubscribeEvent
 	public void onAttackEntity(AttackEntityEvent  event) {
 	    if (event.entityPlayer == mc.thePlayer) {
 	    	String skillname = thelow_item_hudHUD.Getpskillname();
 	    	if(skillname!=null) {
-	    		System.out.println("attaked");
 	    		switch (skillname) {
 	    		case "闇の解放":{
 	    			timer.YamikaihouReset();
@@ -314,6 +312,8 @@ public class skill {
 				
 	    }
 	}
+	
+	//攻撃キー使用判定
 	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event) {
 	    if (event.phase != TickEvent.Phase.END) return;
@@ -333,17 +333,15 @@ public class skill {
 	        
 	    }
 	}
-
 	private void onAttackKeyPressed() {
 	    // 攻撃キーを押した瞬間に実行したい処理
 		if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("詠唱")) {
     		timer.EisyouReset();
     		
-    		System.out.println("magicd");
     	}
 	}
 
-	
+	//被ダメ判定
 	@SubscribeEvent
 	public void onDamage(LivingHurtEvent event) {
 	    EntityPlayerSP player = mc.thePlayer;
@@ -351,7 +349,6 @@ public class skill {
 	    	if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("エース")) {
 	    		timer.EsuReset();
 	    		
-	    		System.out.println("damaged");
 	    	}
 	    }
 	}
@@ -365,7 +362,6 @@ public class skill {
     				// ボス名判定
     			if (text.contains("§c【")) {
     				timer.EsuReset();
-    				System.out.println("VSboss");
     			}
 	        }
 	    }

@@ -57,7 +57,6 @@ public class timer {
 	    }
 	    if(eisyouTimer >= 0) {
 	    	eisyouTimer++;
-	    	System.out.println("eisyou:"+eisyouTimer);
 	    	//10秒経過で実行
 	    	if(eisyouTimer >=10*20) {
 	    		skill.eisyou = true;
@@ -79,7 +78,6 @@ public class timer {
 	    	}
 	    	if (lastPos != null && !currentPos.equals(lastPos)) {
 	    		EsuReset();
-				System.out.println("moved");
 				lastPos = currentPos;
 				return;
 	    	}
@@ -87,7 +85,6 @@ public class timer {
 	    
 	    	if (player.getFoodStats().getFoodLevel() == 0) {
 	    		EsuReset();
-				System.out.println("hungerd");
 	        	return;
 	    	}
 	    }
@@ -122,6 +119,20 @@ public class timer {
 		timer/=20;
 		timer = 30 - timer;
 		return timer;
+	}
+	
+	public static void Reconnected() {
+		skill.yochou = false;
+		skill.kaihou = false;
+		yochouTimer = -1;
+		kaihouTimer = -1;
+		YamikaihouReset();
+		EsuReset();
+		EisyouReset();
+		EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+		 if (player != null) {
+	            player.sendChatMessage("/thelow_api subscribe SKILL_COOLTIME");
+	        }
 	}
 	
 	public static void Yamikaihou() {
