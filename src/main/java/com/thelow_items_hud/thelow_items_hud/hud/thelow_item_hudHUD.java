@@ -21,7 +21,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class thelow_item_hudHUD extends Gui {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
-    private static ItemStack currentItems = null;
     
     public static void register() {
         MinecraftForge.EVENT_BUS.register(new thelow_item_hudHUD());
@@ -38,9 +37,6 @@ public class thelow_item_hudHUD extends Gui {
         
         if(holdingItems==null)return;//何も持っていないから終わり
         
-        if(currentItems ==null||holdingItems!=currentItems) {
-        	currentItems = holdingItems;
-        }else return;
         
         if(holdingItems.getTagCompound()==null||!holdingItems.hasTagCompound())return;//タグがないから終わり
         
