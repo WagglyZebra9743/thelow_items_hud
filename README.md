@@ -1,5 +1,6 @@
 # thelow_items_hud
 thelowで手に持っているアイテムを表示するmod  
+表示位置の変更はコマンド /item_hud <x座標> <y座標>
 ## 機能紹介
 * アイテムの名前がHUDに表示される  
 * 武器の場合は利用可能レベルと付与された魔法石による効果等も表示される
@@ -14,5 +15,5 @@ thelowで手に持っているアイテムを表示するmod
 このmodの使用は自己責任です  
 利用したことによってパソコンなどに不具合が発生しても責任はとれません  
 しかしできる限り修正したいので連絡をくれるとありがたいです  
-GitHub https://github.com/WagglyZebra9743/thelow_items_hud/issues
+GitHub https://github.com/WagglyZebra9743/thelow_items_hud/issues  
 discord wagglyzebra9743
