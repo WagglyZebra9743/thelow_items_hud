@@ -17,7 +17,7 @@ public class APIListener {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChat(ClientChatReceivedEvent event) {
         String colormsg = event.message.getFormattedText();
-        if(colormsg.equals(" §r§a正常にプレイヤーデータをロードしました。§r")) {
+        if(colormsg.equals("§r§a正常にプレイヤーデータをロードしました。§r")) {
         	timer.Reconnected();
         }
 

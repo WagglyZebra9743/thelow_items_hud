@@ -122,7 +122,10 @@ public class thelow_item_hudHUD extends Gui {
         			di0 -= 13;
         			continue;
         		}
-        	}return;
+        	}
+        	timer.YamikaihouReset();
+        	timer.EsuReset();
+        	timer.EisyouReset();return;
         }
         
         String item_type = "";
@@ -284,8 +287,7 @@ public class thelow_item_hudHUD extends Gui {
                 pskillnameshow = pskillname;
                 timer.EisyouReset();
                 break;
-        }
-
+        	}
         }
         
         
