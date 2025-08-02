@@ -111,7 +111,7 @@ public class thelow_item_hudHUD extends Gui {
         }
         if(itemName!=null&&!itemName.isEmpty()) HUD_render(itemName,0);
         
-        if(itemName!=null&&itemName.contains("メモ")) {
+        if(itemName!=null&&(itemName.contains("メモ")||itamName.contains("リスト"))) {
         	int di0 = 13;
         	for(int i=0;i<lore.size();i++) {
         		String loretext = lore.get(i).replaceAll("§.", "");;
