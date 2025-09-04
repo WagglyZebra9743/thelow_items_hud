@@ -16,6 +16,7 @@ public class timer {
 	private static int eisyouTimer = -1;
 	private static BlockPos lastPos = null;
 	private static final Minecraft mc = Minecraft.getMinecraft();
+	public static int tick = 0;
 	@SubscribeEvent
 	public void TickTimer(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) return;
@@ -62,6 +63,16 @@ public class timer {
 	    		skill.eisyou = true;
 	    		eisyouTimer = -1;
 	    	}
+	    }
+	    
+	    if(APIListener.tickenable&&!APIListener.status_getted) {
+	    tick++;
+	    if(tick>=20*10+3){
+	    	APIListener.tickenable=false;
+	    	tick=0;
+	    	mc.thePlayer.sendChatMessage("/thelow_api detailed_status");
+	    	}
+	    System.out.println("tick:"+tick);
 	    }
 	}
 	

@@ -35,6 +35,7 @@ public class thelow_item_hudHUD extends Gui {
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Text event) {
         if (mc.thePlayer == null || mc.theWorld == null) return;//プレイヤーまたはワールドがない場合は実行しない
+        if(!ConfigHandler.hudenable) return;//有効でない場合何もしない
         ItemStack holdingItems = mc.thePlayer.getHeldItem();
         
         
@@ -98,17 +99,10 @@ public class thelow_item_hudHUD extends Gui {
         
         
         
-        List<String> lore = new ArrayList<>();
+        List<String> lore = getlore(nbt);
         
-        if (nbt.hasKey("display", 10)) { // 10 = NBTTagCompound
-            NBTTagCompound display = nbt.getCompoundTag("display");
-            if (display.hasKey("Lore", 9)) { // 9 = NBTTagList
-                NBTTagList loreList = display.getTagList("Lore", 8); // 8 = String tag
-                for (int i = 0; i < loreList.tagCount(); i++) {
-                    lore.add(loreList.getStringTagAt(i));
-                }
-            }
-        }
+        
+        
         if(itemName!=null&&!itemName.isEmpty()) HUD_render(itemName,0);
         
         if(itemName!=null&&(itemName.contains("メモ")||itemName.contains("リスト"))) {
@@ -141,7 +135,6 @@ public class thelow_item_hudHUD extends Gui {
             	if (line.contains("魔法")) {
             		item_type = "魔法";
             	}
-            	
             }
         }
         if(item_type == ""||item_type == null || item_type.isEmpty()) {
@@ -160,52 +153,7 @@ public class thelow_item_hudHUD extends Gui {
         	level = (int) nbt.getShort("thelow_avaliable_level");//levelに格納
         }
         
-        double[] stones = {1,1,1,100,0};
-        if(nbt.hasKey("thelow_item_slot_list")) {//魔法石スロットがあるか
-        	String slot_text_data = nbt.getString("thelow_item_slot_list");//それをStringで取得
-        	String[] slots = slot_text_data.split(",");
-        	if(slots != null && !slot_text_data.isEmpty()) {//データがあるかチェック
-        		for (String slot : slots) {
-        			//特攻魔石
-            		for(int n = 0;n<=2;n++) {
-            			for(int i = 1;i<=5;i++) {
-            				if(slot.equals(stone_type[n]+i)){
-            					stones[n] *= attak_par[i-1];
-            				}
-            			}
-            			if(slot.equals(stone_type[n]+"4_5")) {
-            				stones[n] *= 1.4;
-            			}
-            			if(slot.equals(stone_type[n]+"LEGEND")) {
-            				for(int j = 0;j<=2;j++) {
-            					stones[j] *= 0.06;
-            				}
-            				stones[n] /= 0.06;
-            				stones[n] *= 1.55;
-            			}
-            		}
-            		//キャスター
-            		for(int i = 1;i<=5;i++) {
-        				if(slot.equals(stone_type[3]+i)){
-        					stones[3] *= cas_par[i-1];
-        				}
-        			}
-            		if(slot.equals(stone_type[3]+"4_5")) {
-            			stones[3] *= 0.72;
-            		}
-            		//ポーシング
-            		for(int i = 1;i<=5;i++) {
-        				if(slot.equals(stone_type[4]+i)){
-        					stones[4] += pos_ev[i-1];
-        				}
-        			}
-            		if(slot.equals(stone_type[4]+"4_5")) {
-            			stones[4] += 0.4;
-            		}
-        		}
-        		
-        	}
-        }
+        double[] stones = stonepars(nbt);
         
 
         String sskill = skill.getsp(nbt);
@@ -353,6 +301,69 @@ public class thelow_item_hudHUD extends Gui {
         	HUD_render(text3,39);
         }
     }
+    public static List<String> getlore(NBTTagCompound nbt){
+    	List<String> lore = new ArrayList<>();
+    	if (nbt.hasKey("display", 10)) { // 10 = NBTTagCompound
+            NBTTagCompound display = nbt.getCompoundTag("display");
+            if (display.hasKey("Lore", 9)) { // 9 = NBTTagList
+                NBTTagList loreList = display.getTagList("Lore", 8); // 8 = String tag
+                for (int i = 0; i < loreList.tagCount(); i++) {
+                    lore.add(loreList.getStringTagAt(i));
+                }
+            }
+        }
+    	return lore;
+    }
+    public static double[] stonepars(NBTTagCompound nbt) {
+    	double[] stones = {1,1,1,100,0};
+        if(nbt.hasKey("thelow_item_slot_list")) {//魔法石スロットがあるか
+        	String slot_text_data = nbt.getString("thelow_item_slot_list");//それをStringで取得
+        	String[] slots = slot_text_data.split(",");
+        	if(slots != null && !slot_text_data.isEmpty()) {//データがあるかチェック
+        		for (String slot : slots) {
+        			//特攻魔石
+            		for(int n = 0;n<=2;n++) {
+            			for(int i = 1;i<=5;i++) {
+            				if(slot.equals(stone_type[n]+i)){
+            					stones[n] *= attak_par[i-1];
+            				}
+            			}
+            			if(slot.equals(stone_type[n]+"4_5")) {
+            				stones[n] *= 1.4;
+            			}
+            			if(slot.equals(stone_type[n]+"LEGEND")) {
+            				for(int j = 0;j<=2;j++) {
+            					stones[j] *= 0.06;
+            				}
+            				stones[n] /= 0.06;
+            				stones[n] *= 1.55;
+            			}
+            		}
+            		//キャスター
+            		for(int i = 1;i<=5;i++) {
+        				if(slot.equals(stone_type[3]+i)){
+        					stones[3] *= cas_par[i-1];
+        				}
+        			}
+            		if(slot.equals(stone_type[3]+"4_5")) {
+            			stones[3] *= 0.72;
+            		}
+            		//ポーシング
+            		for(int i = 1;i<=5;i++) {
+        				if(slot.equals(stone_type[4]+i)){
+        					stones[4] += pos_ev[i-1];
+        				}
+        			}
+            		if(slot.equals(stone_type[4]+"4_5")) {
+            			stones[4] += 0.4;
+            		}
+        		}
+        		
+        	}
+        }
+        return stones;
+    }
+    
     private void HUD_render(String text,int dy) {
     	FontRenderer font = mc.fontRendererObj;
     	int x = ConfigHandler.hudX;//HUD表示位置指定
