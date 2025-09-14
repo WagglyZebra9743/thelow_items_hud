@@ -122,6 +122,7 @@ public class thelow_item_hudHUD extends Gui {
         	timer.EisyouReset();return;
         }
         
+        
         String item_type = "";
         
         for (String line : lore) {
@@ -136,6 +137,11 @@ public class thelow_item_hudHUD extends Gui {
             		item_type = "魔法";
             	}
             }
+            if(line.contains("x:")&&line.contains("y:")&&line.contains("z:")) {//カギとかに書いてある座標系式ならば
+        		HUD_render(line,13);//その行を表示する
+        		System.out.println("lore座標取得"+lore.toString());
+        		return;
+        	}
         }
         if(item_type == ""||item_type == null || item_type.isEmpty()) {
         	timer.YamikaihouReset();

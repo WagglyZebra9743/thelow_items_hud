@@ -99,8 +99,8 @@ public class APIListener {
         	mc.thePlayer.sendChatMessage("/thelow_api detailed_status");
         }
         
-        // "$API"で始まるか判定
-        if (message.startsWith("$API")) {
+        // "$api"で始まるか判定
+        if (message.startsWith("$api")) {
             event.setCanceled(true); // この行で表示をキャンセル
         }
     }

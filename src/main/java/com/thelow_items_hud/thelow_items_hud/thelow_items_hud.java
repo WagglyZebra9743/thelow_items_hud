@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = "thelow_items_hud", version = "1.1",guiFactory = "com.thelow_items_hud.thelow_items_hud.config.GuiFactory")
+@Mod(modid = "thelow_items_hud", version = "1.2",guiFactory = "com.thelow_items_hud.thelow_items_hud.config.GuiFactory")
 public class thelow_items_hud {
 
 	private APIListener apiListener = new APIListener();
