@@ -62,7 +62,7 @@ public class ItemHover {
             	//一部のスキルは誤取得するのでここで除外しておく
             	if(nbt.hasKey("view_weapon_skill_id")) {
             		String skill_id = nbt.getString("view_weapon_skill_id");
-            		if(skill_id!=null&&(skill_id.equals("wskill42")||skill_id.equals("wskill127")||skill_id.equals("wskill136")||skill_id.equals("wskill2"))){
+            		if(skill_id!=null&&(skill_id.equals("11wskill42")||skill_id.equals("32wskill127")||skill_id.equals("34wskill136")||skill_id.equals("wskill2"))){
             			return;
             		}
             	}else return;
@@ -77,7 +77,20 @@ public class ItemHover {
             	List<String> lore1 = thelow_item_hudHUD.getlore(nbt1);
                 if(lore1==null||lore1.isEmpty()) return;//無いなら終了
                 
+                String skillsetid = null;
+            	if(nbt1.hasKey("thelow_item_weapon_skill_set_id")) {
+        			skillsetid = nbt1.getString("thelow_item_weapon_skill_set_id");
+        		}
                 
+            	String skill_id = null;
+            	//一部のスキルは誤取得するのでここで除外しておく
+            	if(nbt.hasKey("view_weapon_skill_id")) {
+            		 skill_id = skillsetid+nbt.getString("view_weapon_skill_id");
+            		if(skill_id!=null&&(skill_id.equals("wskill42")||skill_id.equals("wskill127")||skill_id.equals("wskill136")||skill_id.equals("1wskill2"))){
+            			return;
+            		}
+            	}else return;
+            	
             	int item_type1 = -1;
             	for (String line : lore1) {
                     if (line.contains("以上")) {
@@ -163,35 +176,19 @@ public class ItemHover {
                 	return;
                 }else {
                 	
-                	String skillid = null;
-                	if(nbt1.hasKey("thelow_item_weapon_skill_set_id")) {
-            			skillid = nbt1.getString("thelow_item_weapon_skill_set_id");
-            		}
-                	
-                	String itemName = null;
-                	if (nbt.hasKey("display", 10)) { // 10 = Compound
-                        NBTTagCompound display = nbt.getCompoundTag("display");
-                        if (display.hasKey("Name", 8)) { // 8 = String
-                            itemName = display.getString("Name");
-                        }
-                    	}
-                	
-                	if(skillid!=null&&skillid.equals("6")) {
-                		if(itemName!=null&&itemName.equals("§bマジックボール")) {
-                    		values.name.add("詠唱付き");
-                    		values.value.add(8.0);
-                		}if(itemName!=null&&itemName.equals("§bライトニングボルト")) {
-                    		values.name.add("詠唱付き");
-                    		values.value.add(6.0);
-                		}if(itemName!=null&&itemName.equals("§bメテオストライク")) {
-                    		values.name.add("詠唱付き");
-                    		values.value.add(18.0);
-                		}
-                	}else if(skillid!=null&&skillid.equals("36")) {
-                			if(itemName!=null&&itemName.equals("§b率舞")) {
-                				values.name.add("最大");
-                				values.value.add(1.2);
-                			}
+                	if(skill_id!=null&&skill_id.equals("6wskill22")) {
+                    	values.name.add("詠唱付き");
+                    	values.value.add(8.0);
+                	}if(skill_id!=null&&skill_id.equals("6wskill23")) {
+                    	values.name.add("詠唱付き");
+                    	values.value.add(6.0);
+                	}if(skill_id!=null&&skill_id.equals("6wskill24")) {
+                    	values.name.add("詠唱付き");
+                    	values.value.add(18.0);
+                	}
+                	if(skill_id!=null&&skill_id.equals("36wskill142-2")) {
+                		values.name.add("最大");
+                		values.value.add(1.2);
                 	}
                 	
                 	int addplace = lore.size();
@@ -203,10 +200,10 @@ public class ItemHover {
                 			String mobdamagename = base_mob_damages.name.get(j);
                 			double mobdamagevalue = base_mob_damages.value.get(j);
                 			mobdamagevalue*=values.value.get(i);
-                			damagetext =damagetext+mobdamagename+"§7"+String.format("%.2f",mobdamagevalue)+"§4("+String.format("%.2f",mobdamagevalue*1.15)+")§r";
+                			damagetext ="§7"+mobdamagename+String.format("%.2f",mobdamagevalue)+"§4("+String.format("%.2f",mobdamagevalue*1.15)+")§r";
+                			addplace++;
+                    		tooltip.add(addplace,damagetext);
                 		}
-                		addplace++;
-                		tooltip.add(addplace,damagetext);
                 	}
                 }
                 
