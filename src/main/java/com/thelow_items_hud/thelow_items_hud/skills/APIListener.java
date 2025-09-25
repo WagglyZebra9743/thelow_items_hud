@@ -9,6 +9,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class APIListener {
 
@@ -16,6 +17,9 @@ public class APIListener {
     public static double[] overStrength = {1.0,1.0,1.0};
     public static boolean status_getted = false;
     public static boolean tickenable = false;
+    private static int INTERVAL = 200;
+    private static int cmd_ct = 0;
+    private static boolean[] flags = {false,false,false};
     
     private static final Minecraft mc = Minecraft.getMinecraft();
 
@@ -24,8 +28,9 @@ public class APIListener {
         
         String msg = event.message.getUnformattedText();
         
-        if(msg.contains("職業「")&&msg.contains("」を選択しました。")) {
+        if(flags[2]&&msg.contains("職業「")&&msg.endsWith("」を選択しました。")) {
         	mc.thePlayer.sendChatMessage("/thelow_api detailed_status");
+        	flags[2] = false;
         }
         
         if (msg.startsWith("$api")) {
@@ -65,10 +70,6 @@ public class APIListener {
                     	 status_getted = true;
                     	 ConfigHandler.save();
                      }
-                      
-                      
-                      
-                      
                      
                 } catch (Exception e) {
                     mc.thePlayer.addChatMessage(new ChatComponentText("§a[thelow_items_hud]§c 解析失敗: " + e.getMessage()));
@@ -77,26 +78,29 @@ public class APIListener {
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void APIcancel(ClientChatReceivedEvent event) {
         String message = event.message.getUnformattedText(); // 色コードや装飾を除去したテキスト
         
         String colormsg = event.message.getFormattedText();
-        if(colormsg.equals("§r§a正常にプレイヤーデータをロードしました。§r")) {
+        if(!flags[0]&&colormsg.equals("§r§a正常にプレイヤーデータをロードしました。§r")) {
         	timer.Reconnected();
         	status_getted = false;
         	timer.tick=0;
         	tickenable = true;
+            flags[0]=true;
         	
         	mc.thePlayer.sendChatMessage("/thelow_api subscribe SKILL_COOLTIME");
         }
         
-        if(colormsg.startsWith("§r§a倉庫データを取得しました")){
+        if(!flags[1]&&colormsg.startsWith("§r§a倉庫データを取得しました")){
         	mc.thePlayer.sendChatMessage("/thelow_api detailed_status");
+            flags[1]=true;
         }
         
-        if(colormsg.contains("§r§e[転生]")) {
+        if(flags[2]&&colormsg.contains("§r§e[転生]")) {
         	mc.thePlayer.sendChatMessage("/thelow_api detailed_status");
+        	flags[2]=false;
         }
         
         // "$api"で始まるか判定
@@ -109,5 +113,20 @@ public class APIListener {
 
     public static String getother() {
         return latestData;
+    }
+    
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) return;//TickEventはSTARTとENDの2回発火するので1回にする
+        if(flags[2]) {
+        	cmd_ct=0;
+        }else {
+        	cmd_ct++;
+        	if(cmd_ct%INTERVAL==0) {
+        		flags[2]=true;
+        		cmd_ct=0;
+        		
+        	}
+        }
     }
 }

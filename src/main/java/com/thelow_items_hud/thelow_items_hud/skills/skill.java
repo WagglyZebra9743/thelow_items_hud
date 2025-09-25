@@ -176,7 +176,7 @@ public class skill {
 		skillMap.put("64wskill18","龍の一閃");
 		skillMap.put("64wskill75","龍の福音");
 		skillMap.put("64wskill105","覇王の鉄槌");
-		skillMap.put("64wskill141","威風堂々");
+		skillMap.put("64","威風堂々");
 		skillMap.put("67wskill67_1","スペルダンス");
 		skillMap.put("67wskill67_2","激情");
 		skillMap.put("67wskill67_3","星輝神の歌声");

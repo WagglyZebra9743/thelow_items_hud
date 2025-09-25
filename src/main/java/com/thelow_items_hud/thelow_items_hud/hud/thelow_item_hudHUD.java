@@ -32,6 +32,7 @@ public class thelow_item_hudHUD extends Gui {
     private static double[] attak_par = {1.1,1.15,1.23,1.35,1.55};
     private static double[] cas_par = {0.95,0.9,0.84,0.77,0.6};
     private static double[] pos_ev = {0.05,0.1,0.15,0.3,0.5};
+    public static NBTTagCompound latestnbt = null;
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Text event) {
         if (mc.thePlayer == null || mc.theWorld == null) return;//プレイヤーまたはワールドがない場合は実行しない
@@ -58,6 +59,9 @@ public class thelow_item_hudHUD extends Gui {
         
         NBTTagCompound nbt = holdingItems.getTagCompound();
         
+        if(nbt==null)return;
+        
+        latestnbt = nbt;
         
         if (!nbt.hasKey("thelow_item_id")) {
         	timer.YamikaihouReset();

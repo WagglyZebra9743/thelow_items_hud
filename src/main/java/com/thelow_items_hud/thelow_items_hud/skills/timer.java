@@ -64,16 +64,6 @@ public class timer {
 	    		eisyouTimer = -1;
 	    	}
 	    }
-	    
-	    if(APIListener.tickenable&&!APIListener.status_getted) {
-	    tick++;
-	    if(tick>=20*10+3){
-	    	APIListener.tickenable=false;
-	    	tick=0;
-	    	mc.thePlayer.sendChatMessage("/thelow_api detailed_status");
-	    	}
-	    System.out.println("tick:"+tick);
-	    }
 	}
 	
 	@SubscribeEvent
