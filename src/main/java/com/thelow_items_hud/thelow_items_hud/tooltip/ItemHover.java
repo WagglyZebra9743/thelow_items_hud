@@ -106,6 +106,9 @@ public class ItemHover {
                 		skillcooltime*=1.0 - (ConfigHandler.QuickTalkSpell * 5.0 / 100.0);
                 	}
                 	showCTtext = String.format("%s§f → §b%.2f秒",showCTtext,skillcooltime+activatetime);
+                }else if(skillcooltime!=0&&ConfigHandler.QuickTalkSpell!=0) {
+                	skillcooltime*=1.0 - (ConfigHandler.QuickTalkSpell * 5.0 / 100.0);
+                	showCTtext = String.format("%s§f → §b%.2f秒",showCTtext,skillcooltime+activatetime);
                 }
                 
                 String skillsetid = null;
