@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.thelow_items_hud.thelow_items_hud.config.ConfigHandler;
 import com.thelow_items_hud.thelow_items_hud.hud.thelow_item_hudHUD;
 import com.thelow_items_hud.thelow_items_hud.skills.APIListener;
 
@@ -59,13 +60,6 @@ public class ItemHover {
             }
             
             if(item_type==-1) {
-            	//一部のスキルは誤取得するのでここで除外しておく
-            	if(nbt.hasKey("view_weapon_skill_id")) {
-            		String skill_id = nbt.getString("view_weapon_skill_id");
-            		if(skill_id!=null&&(skill_id.equals("11wskill42")||skill_id.equals("32wskill127")||skill_id.equals("34wskill136")||skill_id.equals("wskill2"))){
-            			return;
-            		}
-            	}else return;
             	
             	//スキルの文字列があるかどうかを判定してtooltipに表示させてみる
             	//0.持ってるアイテムから取得したloreを一つのStringにすると同時にアイテムタイプの情報を持っているか確認する
@@ -77,6 +71,43 @@ public class ItemHover {
             	List<String> lore1 = thelow_item_hudHUD.getlore(nbt1);
                 if(lore1==null||lore1.isEmpty()) return;//無いなら終了
                 
+                //クールタイムの変更を表示したい
+                double skillcooltimestone = thelow_item_hudHUD.stonepars(nbt1)[3];
+                double skillcooltime = 0.0;
+                skillcooltimestone /=100;
+                int CTplace = 0;
+                String showCTtext="";
+                for(int i=0;i<lore.size();i++) {
+                	String loretxt = lore.get(i);
+                	if(loretxt!=null&&loretxt.contains("§e CT: ： §6")) {
+                		CTplace = i+1;
+						showCTtext = loretxt;
+                		Pattern p = Pattern.compile("§e CT: ： §6(\\d+(?:\\.\\d+)?)秒");
+                        Matcher m = p.matcher(loretxt);
+                        while (m.find()) {
+                            skillcooltime = Double.parseDouble(m.group(1));
+                        }
+                	}
+                }
+                //実行時間を検知する
+                double activatetime = 0;
+                for(String loreline : lore) {
+                	if(loreline!=null&&loreline.contains("§e 実行時間: ： §6")) {
+                		Pattern p = Pattern.compile("§e 実行時間: ： §6(\\d+(?:\\.\\d+)?)秒");
+                        Matcher m = p.matcher(loreline);
+                        while (m.find()) {
+                            activatetime = Double.parseDouble(m.group(1));
+                        }
+                	}
+                }
+                if(skillcooltime!=0&&skillcooltimestone!=1.0) {
+                	skillcooltime*= skillcooltimestone;
+                	if(ConfigHandler.QuickTalkSpell!=0) {
+                		skillcooltime*=1.0 - (ConfigHandler.QuickTalkSpell * 5.0 / 100.0);
+                	}
+                	showCTtext = String.format("%s§f → §b%.2f秒",showCTtext,skillcooltime+activatetime);
+                }
+                
                 String skillsetid = null;
             	if(nbt1.hasKey("thelow_item_weapon_skill_set_id")) {
         			skillsetid = nbt1.getString("thelow_item_weapon_skill_set_id");
@@ -84,13 +115,35 @@ public class ItemHover {
                 
             	String skill_id = null;
             	//一部のスキルは誤取得するのでここで除外しておく
-            	if(nbt.hasKey("view_weapon_skill_id")) {
+            	if(skillsetid!=null&&nbt.hasKey("view_weapon_skill_id")) {
             		 skill_id = skillsetid+nbt.getString("view_weapon_skill_id");
-            		if(skill_id!=null&&(skill_id.equals("wskill42")||skill_id.equals("wskill127")||skill_id.equals("wskill136")||skill_id.equals("1wskill2"))){
+            		if(skill_id!=null&&(skill_id.equals("11wskill42")||skill_id.equals("32wskill127")||skill_id.equals("34wskill136")||skill_id.equals("1wskill2"))){
+            			tooltip.set(CTplace,showCTtext);
             			return;
             		}
-            	}else return;
+            	}
             	
+            	if(skill_id!=null&&skill_id.equals("32wskill125")) {//恵みの泉
+            		skillcooltime=132.0;
+                    skillcooltime*= skillcooltimestone;
+                    if(ConfigHandler.QuickTalkSpell!=0) {
+                    	skillcooltime*=1.0 - (ConfigHandler.QuickTalkSpell * 5.0 / 100.0);
+                    }
+                    showCTtext = String.format("%s§b | %.2f秒(プリ)",showCTtext,skillcooltime+activatetime);
+            	}
+            	
+            	if(skill_id!=null&&skill_id.equals("40wskill158")) {//百花繚乱
+            		skillcooltime=105.0;
+                    skillcooltime*= skillcooltimestone;
+                    if(ConfigHandler.QuickTalkSpell!=0) {
+                    	skillcooltime*=1.0 - (ConfigHandler.QuickTalkSpell * 5.0 / 100.0);
+                    }
+                    showCTtext = String.format("%s§b | %.2f秒(バタシ)",showCTtext,skillcooltime+activatetime);
+                    tooltip.set(CTplace,showCTtext);
+            	}
+            	if(CTplace!=0&&showCTtext!=null&&!showCTtext.isEmpty()) {
+            		tooltip.set(CTplace,showCTtext);
+            	}
             	int item_type1 = -1;
             	for (String line : lore1) {
                     if (line.contains("以上")) {
@@ -172,21 +225,18 @@ public class ItemHover {
                     values.name.add(nname+"倍");
                 }
                 
-                if(values==null||values.name.isEmpty()||values.value.isEmpty()) {
-                	return;
-                }else {
-                	
-                	if(skill_id!=null&&skill_id.equals("6wskill22")) {
+                if(values!=null&&!values.name.isEmpty()&&!values.value.isEmpty()&&skill_id!=null) {
+                	if(skill_id.equals("6wskill22")) {
                     	values.name.add("詠唱付き");
                     	values.value.add(8.0);
-                	}if(skill_id!=null&&skill_id.equals("6wskill23")) {
+                	}if(skill_id.equals("6wskill23")) {
                     	values.name.add("詠唱付き");
                     	values.value.add(6.0);
-                	}if(skill_id!=null&&skill_id.equals("6wskill24")) {
+                	}if(skill_id.equals("6wskill24")) {
                     	values.name.add("詠唱付き");
                     	values.value.add(18.0);
                 	}
-                	if(skill_id!=null&&skill_id.equals("36wskill142-2")) {
+                	if(skill_id.equals("36wskill142-2")) {
                 		values.name.add("最大");
                 		values.value.add(1.2);
                 	}

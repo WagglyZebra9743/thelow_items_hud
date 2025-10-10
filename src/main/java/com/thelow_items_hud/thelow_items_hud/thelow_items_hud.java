@@ -10,6 +10,7 @@ import com.thelow_items_hud.thelow_items_hud.skills.skill;
 import com.thelow_items_hud.thelow_items_hud.skills.timer;
 import com.thelow_items_hud.thelow_items_hud.tooltip.ItemHover;
 import com.thelow_items_hud.thelow_items_hud.tooltip.Keyclick;
+import com.thelow_items_hud.thelow_items_hud.tooltip.parkcollecter;
 
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,7 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = "thelow_items_hud", version = "1.3",guiFactory = "com.thelow_items_hud.thelow_items_hud.config.GuiFactory")
+@Mod(modid = "thelow_items_hud", version = "1.4",guiFactory = "com.thelow_items_hud.thelow_items_hud.config.GuiFactory")
 public class thelow_items_hud {
 
 	private APIListener apiListener = new APIListener();
@@ -36,6 +37,7 @@ public class thelow_items_hud {
         MinecraftForge.EVENT_BUS.register(new timer());
         MinecraftForge.EVENT_BUS.register(new skill());
         MinecraftForge.EVENT_BUS.register(new Keyclick());
+        MinecraftForge.EVENT_BUS.register(new parkcollecter());
         
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new ItemHover());
         

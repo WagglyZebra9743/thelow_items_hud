@@ -2,6 +2,8 @@ package com.thelow_items_hud.thelow_items_hud.config;
 
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+
 import com.thelow_items_hud.thelow_items_hud.skills.APIListener;
 
 import net.minecraft.client.gui.GuiScreen;
@@ -30,15 +32,16 @@ public class ModConfigGui extends GuiConfig {
         super.onGuiClosed();
 
         // GUIで変更された値を ConfigHandler のフィールドに反映
-        APIListener.overStrength[0] = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "OS_sword", APIListener.overStrength[0]).getDouble();
-        APIListener.overStrength[1] = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "OS_bow", APIListener.overStrength[1]).getDouble();
-        APIListener.overStrength[2] = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "OS_magic", APIListener.overStrength[2]).getDouble();
-        ConfigHandler.hudX = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "hudX", ConfigHandler.hudX).getInt();
-        ConfigHandler.hudY = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "hudY", ConfigHandler.hudY).getInt();
-        ConfigHandler.hudenable = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "hudenable", ConfigHandler.hudenable).getBoolean();
-        ConfigHandler.tooltipenable = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "tooltipenable", ConfigHandler.tooltipenable).getBoolean();
-        ConfigHandler.getstatus = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "getstatus", ConfigHandler.getstatus).getBoolean();
-        ConfigHandler.tooltipKey = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "tooltipKey", ConfigHandler.tooltipKey).getInt();
+        APIListener.overStrength[0] = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "OS_sword", 1.0).getDouble();
+        APIListener.overStrength[1] = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "OS_bow", 1.0).getDouble();
+        APIListener.overStrength[2] = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "OS_magic", 1.0).getDouble();
+        ConfigHandler.QuickTalkSpell = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "QuickTalkSpell", 0).getInt();
+        ConfigHandler.hudX = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "hudX", 5).getInt();
+        ConfigHandler.hudY = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "hudY", 5).getInt();
+        ConfigHandler.hudenable = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "hudenable", true).getBoolean();
+        ConfigHandler.tooltipenable = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "tooltipenable", true).getBoolean();
+        ConfigHandler.getstatus = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "getstatus", true).getBoolean();
+        ConfigHandler.tooltipKey = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "tooltipKey", Keyboard.KEY_LSHIFT).getInt();
 
         // 反映された値をファイルに保存
         ConfigHandler.save();

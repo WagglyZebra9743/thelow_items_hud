@@ -38,9 +38,11 @@ public class APIListener {
             if (split.length == 2) {
                 try {
                 	JsonObject json = new JsonParser().parse(split[1]).getAsJsonObject();
+                	if(json==null||json.isJsonNull()||!json.has("apiType")||!json.has("response"))return;
                     String apiType = json.get("apiType").getAsString();
                     if ("skill_cooltime".equals(apiType)) {
                         JsonObject response = json.getAsJsonObject("response");
+                        if(response==null||!response.has("name"))return;
                         String skillname = response.get("name").getAsString();
                         if(skillname!=null) {
                         if(skillname.equals("予兆")) {
@@ -59,8 +61,9 @@ public class APIListener {
                         }
                     }
                      if("detailed_status".equals(apiType)) {
-                    	 if(!ConfigHandler.getstatus)return;
+                    	 if(!ConfigHandler.getstatus&&json!=null&&!json.has("response"))return;
                     	 JsonObject response = json.getAsJsonObject("response");
+                    	 if(response==null||!response.has("overStrengthSword")||!response.has("overStrengthBow")||!response.has("overStrengthMagic"))return;
                     	 overStrength[0] = response.get("overStrengthSword").getAsDouble();
                     	 overStrength[0]+=1;
                     	 overStrength[1] = response.get("overStrengthBow").getAsDouble();

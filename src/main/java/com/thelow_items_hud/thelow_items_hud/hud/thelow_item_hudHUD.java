@@ -41,15 +41,8 @@ public class thelow_item_hudHUD extends Gui {
         
         
         
-        if(holdingItems==null) {
-        	timer.YamikaihouReset();
-        	timer.EsuReset();
-        	timer.EisyouReset();
-        	return;//何も持っていないから終わり
-        }
         
-        
-        if(holdingItems.getTagCompound()==null||!holdingItems.hasTagCompound()) {
+        if(holdingItems==null||holdingItems.getTagCompound()==null||!holdingItems.hasTagCompound()) {
         	timer.YamikaihouReset();
         	timer.EsuReset();
         	timer.EisyouReset();
@@ -64,6 +57,11 @@ public class thelow_item_hudHUD extends Gui {
         latestnbt = nbt;
         
         if (!nbt.hasKey("thelow_item_id")) {
+        	String itemName = GetItemName(nbt);
+        	if(itemName!=null&&itemName.startsWith("§6§lおみくじ")) {
+        		List<String> lore = getlore(nbt);
+            	ShowLores(lore,itemName);
+        	}
         	timer.YamikaihouReset();
         	timer.EsuReset();
         	timer.EisyouReset();
@@ -85,15 +83,8 @@ public class thelow_item_hudHUD extends Gui {
         	timer.EsuReset();
         }
         
-        String itemName = null;
+        String itemName = GetItemName(nbt);
         
-            if (nbt.hasKey("display", 10)) { // 10 = Compound
-                NBTTagCompound display = nbt.getCompoundTag("display");
-                if (display.hasKey("Name", 8)) { // 8 = String
-                    itemName = display.getString("Name");
-                
-            }
-        }
         if(itemName==null || itemName=="") {
         	timer.YamikaihouReset();
         	timer.EsuReset();
@@ -110,17 +101,7 @@ public class thelow_item_hudHUD extends Gui {
         if(itemName!=null&&!itemName.isEmpty()) HUD_render(itemName,0);
         
         if(itemName!=null&&(itemName.contains("メモ")||itemName.contains("リスト"))) {
-        	int di0 = 13;
-        	for(int i=0;i<lore.size();i++) {
-        		String loretext = lore.get(i).replaceAll("§.", "");;
-        		
-        		if(loretext!=null&&!loretext.equals(" ")&&!loretext.equals("")&&!loretext.contains("のみ使用可能です。")) {
-        		HUD_render(lore.get(i),i*13+di0);
-        		}else {
-        			di0 -= 13;
-        			continue;
-        		}
-        	}
+        	ShowLores(lore,itemName);
         	timer.YamikaihouReset();
         	timer.EsuReset();
         	timer.EisyouReset();return;
@@ -143,7 +124,6 @@ public class thelow_item_hudHUD extends Gui {
             }
             if(line.contains("x:")&&line.contains("y:")&&line.contains("z:")) {//カギとかに書いてある座標系式ならば
         		HUD_render(line,13);//その行を表示する
-        		System.out.println("lore座標取得"+lore.toString());
         		return;
         	}
         }
@@ -374,7 +354,7 @@ public class thelow_item_hudHUD extends Gui {
         return stones;
     }
     
-    private void HUD_render(String text,int dy) {
+    private static void HUD_render(String text,int dy) {
     	FontRenderer font = mc.fontRendererObj;
     	int x = ConfigHandler.hudX;//HUD表示位置指定
     	int y = ConfigHandler.hudY;//HUD表示位置指定
@@ -391,5 +371,33 @@ public class thelow_item_hudHUD extends Gui {
     }
     public static String Getpskillname() {
     	return pskillname;
+    }
+    private static String GetItemName(NBTTagCompound nbt) {
+    	String itemName = null;
+        
+        if (nbt.hasKey("display", 10)) { // 10 = Compound
+            NBTTagCompound display = nbt.getCompoundTag("display");
+            if (display.hasKey("Name", 8)) { // 8 = String
+                itemName = display.getString("Name");
+            }
+        }
+        return itemName;
+    }
+    
+    private static void ShowLores(List<String> lore,String name) {
+    	if(lore==null||lore.isEmpty())return;
+    	HUD_render(name,0);
+    	int di0 = 13;
+    	for(int i=0;i<lore.size();i++) {
+    		String loretext = lore.get(i).replaceAll("§.", "");;
+    		
+    		if(loretext!=null&&!loretext.equals(" ")&&!loretext.equals("")&&!loretext.contains("のみ使用可能です。")) {
+    		HUD_render(lore.get(i),i*13+di0);
+    		}else {
+    			di0 -= 13;
+    			continue;
+    		}
+    	}
+    	return;
     }
 }

@@ -43,11 +43,11 @@ public class item_hud extends CommandBase {
                     int x = Integer.parseInt(args[1]);
                     int y = Integer.parseInt(args[2]);
 
+                    sendmsg("§a[thelow_item_hud]§7表示位置を("+ConfigHandler.hudX+","+ConfigHandler.hudY+")から §e(" + x + ", " + y + ") §7に変更しました。",sender);
                     ConfigHandler.hudX = x;
                     ConfigHandler.hudY = y;
                     ConfigHandler.save();
 
-                    sendmsg("§a[thelow_item_hud]§7表示位置を §e(" + x + ", " + y + ") §7に変更しました。",sender);
                     if(!ConfigHandler.hudenable) {
                     	sendmsg("§c[thelow_item_hud]使用方法:/item_hud place <x> <y>",sender);
                     	}
