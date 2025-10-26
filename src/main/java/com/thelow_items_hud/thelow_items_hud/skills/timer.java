@@ -14,6 +14,7 @@ public class timer {
 	private static int yamikaihouTimer = -1;
 	private static int esuTimer = -1;
 	private static int eisyouTimer = -1;
+	public static int itemCTtimer = -1;
 	private static BlockPos lastPos = null;
 	private static final Minecraft mc = Minecraft.getMinecraft();
 	public static int tick = 0;
@@ -62,6 +63,14 @@ public class timer {
 	    	if(eisyouTimer >=10*20) {
 	    		skill.eisyou = true;
 	    		eisyouTimer = -1;
+	    	}
+	    }
+	    
+	    //アイテムCT用
+	    if(itemCTtimer >= 0) {
+	    	itemCTtimer--;
+	    	if(itemCTtimer < 0) {
+	    		itemCTtimer = -1;
 	    	}
 	    }
 	}

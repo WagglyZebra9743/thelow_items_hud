@@ -17,9 +17,11 @@ public class APIListener {
     public static double[] overStrength = {1.0,1.0,1.0};
     public static boolean status_getted = false;
     public static boolean tickenable = false;
-    private static int INTERVAL = 200;
+    public static String itemID = "";
+    private final int INTERVAL = 200;
     private static int cmd_ct = 0;
-    private static boolean[] flags = {false,false,false};
+    private static boolean[] flags = {false,false,false,false};
+    private static int subscribeitemCTdelay = 0;
     
     private static final Minecraft mc = Minecraft.getMinecraft();
 
@@ -40,6 +42,7 @@ public class APIListener {
                 	JsonObject json = new JsonParser().parse(split[1]).getAsJsonObject();
                 	if(json==null||json.isJsonNull()||!json.has("apiType")||!json.has("response"))return;
                     String apiType = json.get("apiType").getAsString();
+                    if(apiType==null||apiType.equals("")||apiType.isEmpty())return;
                     if ("skill_cooltime".equals(apiType)) {
                         JsonObject response = json.getAsJsonObject("response");
                         if(response==null||!response.has("name"))return;
@@ -73,6 +76,13 @@ public class APIListener {
                     	 status_getted = true;
                     	 ConfigHandler.save();
                      }
+                     if("item_cooltime".equals(apiType)) {
+                    	 JsonObject response = json.getAsJsonObject("response");
+                         if(response==null||!response.has("itemId")||!response.has("cooltime"))return;
+                         itemID = response.get("itemId").getAsString();
+                         int cooltimetick = (int) response.get("cooltime").getAsDouble()*20;
+                         timer.itemCTtimer = cooltimetick;
+                     }
                      
                 } catch (Exception e) {
                     mc.thePlayer.addChatMessage(new ChatComponentText("§a[thelow_items_hud]§c 解析失敗: " + e.getMessage()));
@@ -97,7 +107,9 @@ public class APIListener {
         }
         
         if(!flags[1]&&colormsg.startsWith("§r§a倉庫データを取得しました")){
-        	mc.thePlayer.sendChatMessage("/thelow_api detailed_status");
+        	if(overStrength==null||overStrength[0]==1.0||overStrength[1]==1.0||overStrength[2]==1.0) {
+        		mc.thePlayer.sendChatMessage("/thelow_api detailed_status");
+        	}
             flags[1]=true;
         }
         
@@ -105,7 +117,9 @@ public class APIListener {
         	mc.thePlayer.sendChatMessage("/thelow_api detailed_status");
         	flags[2]=false;
         }
-        
+        if(!flags[3]&&colormsg.contains("§r§aインベントリ")) {
+        	flags[3]=true;
+        }
         // "$api"で始まるか判定
         if (message.startsWith("$api")) {
             event.setCanceled(true); // この行で表示をキャンセル
@@ -131,5 +145,16 @@ public class APIListener {
         		
         	}
         }
+        if(flags[3]) {
+        	subscribeitemCTdelay++;
+        	if(subscribeitemCTdelay>=27) {
+        		mc.thePlayer.sendChatMessage("/thelow_api subscribe ITEM_COOLTIME");
+        		subscribeitemCTdelay = 0;
+        		flags[3] = false;
+        	}
+        }
+    }
+    public static void ReSubscribe_itemCT() {
+    	flags[3] = true;
     }
 }

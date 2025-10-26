@@ -41,6 +41,9 @@ public class ModConfigGui extends GuiConfig {
         ConfigHandler.hudenable = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "hudenable", true).getBoolean();
         ConfigHandler.tooltipenable = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "tooltipenable", true).getBoolean();
         ConfigHandler.getstatus = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "getstatus", true).getBoolean();
+        ConfigHandler.itemCThudenable = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL,"itemCThudenable",true).getBoolean();
+        ConfigHandler.itemCThudX = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL,"itemCThudX",450).getInt();
+        ConfigHandler.itemCThudY = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL,"itemCThudY",5).getInt();
         ConfigHandler.tooltipKey = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "tooltipKey", Keyboard.KEY_LSHIFT).getInt();
 
         // 反映された値をファイルに保存
