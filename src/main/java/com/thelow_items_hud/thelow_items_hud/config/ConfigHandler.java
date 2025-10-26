@@ -19,6 +19,9 @@ public class ConfigHandler {
     public static boolean hudenable = true;
     public static boolean tooltipenable = true;
     public static boolean getstatus = true;
+    public static boolean itemCThudenable = true;
+    public static int itemCThudX = 450;
+    public static int itemCThudY = 5;
     public static int tooltipKey = Keyboard.KEY_LSHIFT;
     public static int QuickTalkSpell = 0;
 
@@ -33,12 +36,16 @@ public class ConfigHandler {
         tooltipenable = config.get(CATEGORY_GENERAL, "tooltipenable", true, "tooltipが有効かどうか").getBoolean();
         getstatus = config.get(CATEGORY_GENERAL, "getstatus", true, "増加値等を自動取得するか").getBoolean();
         
+        itemCThudenable = config.get(CATEGORY_GENERAL, "itemCThudenable", true, "アイテムCTを表示するか").getBoolean();
+        itemCThudX = config.get(CATEGORY_GENERAL, "itemCThudX", 450, "アイテムCT表示のX座標").getInt();
+        itemCThudY = config.get(CATEGORY_GENERAL, "itemCThudY", 5, "アイテムCT表示のY座標").getInt();
+        
         APIListener.overStrength[0] = config.get(CATEGORY_GENERAL, "OS_sword", 1.0, "剣OS等増加値").getDouble();
         APIListener.overStrength[1] = config.get(CATEGORY_GENERAL, "OS_bow", 1.0, "弓OS等増加値").getDouble();
         APIListener.overStrength[2] = config.get(CATEGORY_GENERAL, "OS_magic", 1.0, "魔法OS等増加値").getDouble();
         
         tooltipKey = config.get(CATEGORY_GENERAL, "tooltipKey", Keyboard.KEY_LSHIFT, "tooltip表示キー").getInt();
-        QuickTalkSpell = config.get(CATEGORY_GENERAL, "QuickTalkSpell", 0, "CT減少パークのレベル").getInt();
+        QuickTalkSpell = Math.max(0, config.get(CATEGORY_GENERAL, "QuickTalkSpell", 0, "CT減少パークのレベル").getInt());
 
 
         if (config.hasChanged()) {
@@ -52,6 +59,9 @@ public class ConfigHandler {
         config.get(CATEGORY_GENERAL, "hudenable", true,"HUDが有効かどうか").set(hudenable);
         config.get(CATEGORY_GENERAL, "tooltipenable", true,"tooltipが有効かどうか").set(tooltipenable);
         config.get(CATEGORY_GENERAL, "getstatus", true,"増加値等を自動取得するか").set(getstatus);
+        config.get(CATEGORY_GENERAL, "itemCThudenable", true,"アイテムCTを表示するか").set(itemCThudenable);
+        config.get(CATEGORY_GENERAL, "itemCThudX", 450, "アイテムCTHUDのX座標").set(itemCThudX);
+        config.get(CATEGORY_GENERAL, "itemCThudY", 5, "アイテムCTHUDのY座標").set(itemCThudY);
         config.get(CATEGORY_GENERAL, "OS_sword", 1.0, "剣OS等増加値").set(APIListener.overStrength[0]);
         config.get(CATEGORY_GENERAL, "OS_bow", 1.0, "弓OS等増加値").set(APIListener.overStrength[1]);
         config.get(CATEGORY_GENERAL, "OS_magic", 1.0, "魔法OS等増加値").set(APIListener.overStrength[2]);

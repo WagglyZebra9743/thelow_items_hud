@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thelow_items_hud.thelow_items_hud.config.ConfigHandler;
+import com.thelow_items_hud.thelow_items_hud.skills.APIListener;
 import com.thelow_items_hud.thelow_items_hud.skills.skill;
 import com.thelow_items_hud.thelow_items_hud.skills.timer;
 
@@ -38,8 +39,21 @@ public class thelow_item_hudHUD extends Gui {
         if (mc.thePlayer == null || mc.theWorld == null) return;//プレイヤーまたはワールドがない場合は実行しない
         if(!ConfigHandler.hudenable) return;//有効でない場合何もしない
         ItemStack holdingItems = mc.thePlayer.getHeldItem();
+        int hudX = ConfigHandler.hudX;
+    	int hudY = ConfigHandler.hudY;
         
-        
+        if(ConfigHandler.itemCThudenable&&timer.itemCTtimer>=0) {
+        	int itemhudX =ConfigHandler.itemCThudX;
+        	int itemhudY =ConfigHandler.itemCThudY;
+        	int time_tick = timer.itemCTtimer;
+        	int time_sec = time_tick/20;
+        	time_tick%=20;
+        	int time_msec = time_tick*5;
+        	String itemCTtext = String.format("%d:%02d",time_sec,time_msec);
+        	
+        	HUD_render(APIListener.itemID,0,itemhudX,itemhudY);
+        	HUD_render(itemCTtext,13,itemhudX,itemhudY);
+        }
         
         
         if(holdingItems==null||holdingItems.getTagCompound()==null||!holdingItems.hasTagCompound()) {
@@ -58,9 +72,12 @@ public class thelow_item_hudHUD extends Gui {
         
         if (!nbt.hasKey("thelow_item_id")) {
         	String itemName = GetItemName(nbt);
-        	if(itemName!=null&&itemName.startsWith("§6§lおみくじ")) {
+        	if(itemName!=null&&itemName.contains("§6§lおみくじ")) {
         		List<String> lore = getlore(nbt);
             	ShowLores(lore,itemName);
+        	}
+        	if(itemName!=null&itemName.startsWith("§7On CoolDown (§r")) {
+        		HUD_render(itemName,0,hudX,hudY);
         	}
         	timer.YamikaihouReset();
         	timer.EsuReset();
@@ -98,7 +115,7 @@ public class thelow_item_hudHUD extends Gui {
         
         
         
-        if(itemName!=null&&!itemName.isEmpty()) HUD_render(itemName,0);
+        if(itemName!=null&&!itemName.isEmpty()) HUD_render(itemName,0,hudX,hudY);
         
         if(itemName!=null&&(itemName.contains("メモ")||itemName.contains("リスト"))) {
         	ShowLores(lore,itemName);
@@ -123,7 +140,7 @@ public class thelow_item_hudHUD extends Gui {
             	}
             }
             if(line.contains("x:")&&line.contains("y:")&&line.contains("z:")) {//カギとかに書いてある座標系式ならば
-        		HUD_render(line,13);//その行を表示する
+        		HUD_render(line,13,hudX,hudY);//その行を表示する
         		return;
         	}
         }
@@ -281,14 +298,14 @@ public class thelow_item_hudHUD extends Gui {
         String text2 = text2Builder.toString();
     
         
-        HUD_render(text,13);
+        HUD_render(text,13,hudX,hudY);
      
         if(text2!=null&&!text2.isEmpty()) {
-        	HUD_render(text2,26);
+        	HUD_render(text2,26,hudX,hudY);
         }
         
         if(text3!=null&&!text3.isEmpty()) {
-        	HUD_render(text3,39);
+        	HUD_render(text3,39,hudX,hudY);
         }
     }
     public static List<String> getlore(NBTTagCompound nbt){
@@ -354,10 +371,8 @@ public class thelow_item_hudHUD extends Gui {
         return stones;
     }
     
-    private static void HUD_render(String text,int dy) {
+    private static void HUD_render(String text,int dy,int x,int y) {
     	FontRenderer font = mc.fontRendererObj;
-    	int x = ConfigHandler.hudX;//HUD表示位置指定
-    	int y = ConfigHandler.hudY;//HUD表示位置指定
     	y += dy;
     	int textWidth = font.getStringWidth(text);
     	int textHeight = font.FONT_HEIGHT;
@@ -385,14 +400,18 @@ public class thelow_item_hudHUD extends Gui {
     }
     
     private static void ShowLores(List<String> lore,String name) {
-    	if(lore==null||lore.isEmpty())return;
-    	HUD_render(name,0);
+    	int hudX = ConfigHandler.hudX;
+    	int hudY = ConfigHandler.hudY;
+    	if(name!=null&&!name.isEmpty()) {
+    		HUD_render(name,0,hudX,hudY);
+    	}else if(lore==null||lore.isEmpty())return;
+    	
     	int di0 = 13;
     	for(int i=0;i<lore.size();i++) {
     		String loretext = lore.get(i).replaceAll("§.", "");;
     		
     		if(loretext!=null&&!loretext.equals(" ")&&!loretext.equals("")&&!loretext.contains("のみ使用可能です。")) {
-    		HUD_render(lore.get(i),i*13+di0);
+    		HUD_render(lore.get(i),i*13+di0,hudX,hudY);
     		}else {
     			di0 -= 13;
     			continue;

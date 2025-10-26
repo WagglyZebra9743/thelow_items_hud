@@ -74,6 +74,7 @@ public class ItemHover {
                 //クールタイムの変更を表示したい
                 double skillcooltimestone = thelow_item_hudHUD.stonepars(nbt1)[3];
                 double skillcooltime = 0.0;
+                double minskillcooltime = 0.0;
                 skillcooltimestone /=100;
                 int CTplace = 0;
                 String showCTtext="";
@@ -87,9 +88,15 @@ public class ItemHover {
                         while (m.find()) {
                             skillcooltime = Double.parseDouble(m.group(1));
                         }
+                        p = Pattern.compile("最小(\\d+(?:\\.\\d+)?)秒");
+                        m = p.matcher(loretxt);
+                        while (m.find()) {
+                            minskillcooltime = Double.parseDouble(m.group(1));
+                        }
                 	}
                 }
                 //実行時間を検知する
+                //スキルには最小クールタイム時間があることがある
                 double activatetime = 0;
                 for(String loreline : lore) {
                 	if(loreline!=null&&loreline.contains("§e 実行時間: ： §6")) {
@@ -100,16 +107,7 @@ public class ItemHover {
                         }
                 	}
                 }
-                if(skillcooltime!=0&&skillcooltimestone!=1.0) {
-                	skillcooltime*= skillcooltimestone;
-                	if(ConfigHandler.QuickTalkSpell!=0) {
-                		skillcooltime*=1.0 - (ConfigHandler.QuickTalkSpell * 5.0 / 100.0);
-                	}
-                	showCTtext = String.format("%s§f → §b%.2f秒",showCTtext,skillcooltime+activatetime);
-                }else if(skillcooltime!=0&&ConfigHandler.QuickTalkSpell!=0) {
-                	skillcooltime*=1.0 - (ConfigHandler.QuickTalkSpell * 5.0 / 100.0);
-                	showCTtext = String.format("%s§f → §b%.2f秒",showCTtext,skillcooltime+activatetime);
-                }
+                showCTtext = skill_cooltime_to_text(skillcooltime,activatetime,skillcooltimestone,minskillcooltime,showCTtext,"%s§f → §b%.2f秒");
                 
                 String skillsetid = null;
             	if(nbt1.hasKey("thelow_item_weapon_skill_set_id")) {
@@ -120,31 +118,26 @@ public class ItemHover {
             	//一部のスキルは誤取得するのでここで除外しておく
             	if(skillsetid!=null&&nbt.hasKey("view_weapon_skill_id")) {
             		 skill_id = skillsetid+nbt.getString("view_weapon_skill_id");
+            		 //11wskill42→ストーンフィールド(敵体力の1%)、32wskill127→ホーリーブラッド(回復量1.4倍)、34wskill136→闇の加速(弓の速さ1.4倍)、1wskill2→剣舞(敵最大体力の1%,2%,4%..)
             		if(skill_id!=null&&(skill_id.equals("11wskill42")||skill_id.equals("32wskill127")||skill_id.equals("34wskill136")||skill_id.equals("1wskill2"))){
-            			tooltip.set(CTplace,showCTtext);
+            			if(showCTtext!=null&&showCTtext!=""&&!showCTtext.isEmpty()) {
+            				tooltip.set(CTplace,showCTtext);
+            			}
             			return;
             		}
             	}
             	
             	if(skill_id!=null&&skill_id.equals("32wskill125")) {//恵みの泉
             		skillcooltime=132.0;
-                    skillcooltime*= skillcooltimestone;
-                    if(ConfigHandler.QuickTalkSpell!=0) {
-                    	skillcooltime*=1.0 - (ConfigHandler.QuickTalkSpell * 5.0 / 100.0);
-                    }
-                    showCTtext = String.format("%s§b | %.2f秒(プリ)",showCTtext,skillcooltime+activatetime);
+                    showCTtext = skill_cooltime_to_text(skillcooltime,activatetime,skillcooltimestone,minskillcooltime,showCTtext,"%s§b | %.2f秒(プリ)");
             	}
             	
             	if(skill_id!=null&&skill_id.equals("40wskill158")) {//百花繚乱
             		skillcooltime=105.0;
-                    skillcooltime*= skillcooltimestone;
-                    if(ConfigHandler.QuickTalkSpell!=0) {
-                    	skillcooltime*=1.0 - (ConfigHandler.QuickTalkSpell * 5.0 / 100.0);
-                    }
-                    showCTtext = String.format("%s§b | %.2f秒(バタシ)",showCTtext,skillcooltime+activatetime);
+                    showCTtext = skill_cooltime_to_text(skillcooltime,activatetime,skillcooltimestone,minskillcooltime,showCTtext,"%s§b | %.2f秒(バタシ)");
                     tooltip.set(CTplace,showCTtext);
             	}
-            	if(CTplace!=0&&showCTtext!=null&&!showCTtext.isEmpty()) {
+            	if(CTplace!=0&&showCTtext!=null&&showCTtext!=""&&!showCTtext.isEmpty()) {
             		tooltip.set(CTplace,showCTtext);
             	}
             	int item_type1 = -1;
@@ -409,5 +402,20 @@ public class ItemHover {
         }
 		
 		return damages;
+	}
+	private static String skill_cooltime_to_text(double skillcooltime,double activatetime,double skillcooltimestone,double minskillcooltime,String showCTtext,String textformat) {
+		if(showCTtext==null)return null;
+		double currentskillcooltime = skillcooltime;
+		skillcooltime*= skillcooltimestone;
+		skillcooltime*=1.0 - (ConfigHandler.QuickTalkSpell * 5.0 / 100.0);
+		if(skillcooltime+activatetime<minskillcooltime) {
+			skillcooltime = minskillcooltime;
+		}
+		skillcooltime+=activatetime;
+		if(currentskillcooltime==skillcooltime)return null;
+		if(skillcooltime+activatetime!=0) {
+			showCTtext = String.format(textformat,showCTtext,skillcooltime);
+		}
+		return showCTtext;
 	}
 }

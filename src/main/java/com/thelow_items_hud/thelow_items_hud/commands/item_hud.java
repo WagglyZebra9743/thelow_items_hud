@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thelow_items_hud.thelow_items_hud.config.ConfigHandler;
+import com.thelow_items_hud.thelow_items_hud.skills.APIListener;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -80,6 +81,7 @@ public class item_hud extends CommandBase {
             }
             case "reload":{
             	Minecraft.getMinecraft().thePlayer.sendChatMessage("/thelow_api detailed_status");
+            	APIListener.ReSubscribe_itemCT();
             	sendmsg("§a[thelow_item_hud]§7APIコマンドを送信しました",sender);
             	break;
             }
