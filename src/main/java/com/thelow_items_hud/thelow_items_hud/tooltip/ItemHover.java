@@ -315,10 +315,10 @@ public class ItemHover {
         
         
         for (int i=0;i<special_attack_damage.size();i++) {
-        	special_attack_damage.set(i, special_attack_damage.get(i)*APIListener.overStrength[item_type]);
+        	special_attack_damage.set(i, special_attack_damage.get(i)*ConfigHandler.overStrength[item_type]);
         }
         
-        double base_attack_damage = base_attack * APIListener.overStrength[item_type];
+        double base_attack_damage = base_attack * ConfigHandler.overStrength[item_type];
         
         double[] stonepar = thelow_item_hudHUD.stonepars(nbt);
         
