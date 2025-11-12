@@ -29,27 +29,27 @@ public class thelow_item_hudHUD extends Gui {
 
     private static String pskillname = null;
     private static Long itemseed = 0L;
-    private static String[] stone_type = {"zombie_attackLEVEL","skeleton_attackLEVEL","living_attackLEVEL","reduce_cooltime_magic_stoneLEVEL","add_mp_magicstoneLEVEL"};
-    private static double[] attak_par = {1.1,1.15,1.23,1.35,1.55};
-    private static double[] cas_par = {0.95,0.9,0.84,0.77,0.6};
-    private static double[] pos_ev = {0.05,0.1,0.15,0.3,0.5};
+    private static final String[] stone_type = {"zombie_attackLEVEL","skeleton_attackLEVEL","living_attackLEVEL","reduce_cooltime_magic_stoneLEVEL","add_mp_magicstoneLEVEL"};
+    private static final double[] attak_par = {1.1,1.15,1.23,1.35,1.55};
+    private static final double[] cas_par = {0.95,0.9,0.84,0.77,0.6};
+    private static final double[] pos_ev = {0.05,0.1,0.15,0.3,0.5};
     public static NBTTagCompound latestnbt = null;
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Text event) {
         if (mc.thePlayer == null || mc.theWorld == null) return;//プレイヤーまたはワールドがない場合は実行しない
         if(!ConfigHandler.hudenable) return;//有効でない場合何もしない
-        ItemStack holdingItems = mc.thePlayer.getHeldItem();
-        int hudX = ConfigHandler.hudX;
-    	int hudY = ConfigHandler.hudY;
+        final ItemStack holdingItems = mc.thePlayer.getHeldItem();
+        final int hudX = ConfigHandler.hudX;
+    	final int hudY = ConfigHandler.hudY;
         
         if(ConfigHandler.itemCThudenable&&timer.itemCTtimer>=0) {
-        	int itemhudX =ConfigHandler.itemCThudX;
-        	int itemhudY =ConfigHandler.itemCThudY;
+        	final int itemhudX =ConfigHandler.itemCThudX;
+        	final int itemhudY =ConfigHandler.itemCThudY;
         	int time_tick = timer.itemCTtimer;
-        	int time_sec = time_tick/20;
+        	final int time_sec = time_tick/20;
         	time_tick%=20;
-        	int time_msec = time_tick*5;
-        	String itemCTtext = String.format("%d:%02d",time_sec,time_msec);
+        	final int time_msec = time_tick*5;
+        	final String itemCTtext = String.format("%d:%02d",time_sec,time_msec);
         	
         	HUD_render(APIListener.itemID,0,itemhudX,itemhudY);
         	HUD_render(itemCTtext,13,itemhudX,itemhudY);
@@ -57,97 +57,94 @@ public class thelow_item_hudHUD extends Gui {
         
         
         if(holdingItems==null||holdingItems.getTagCompound()==null||!holdingItems.hasTagCompound()) {
-        	timer.YamikaihouReset();
-        	timer.EsuReset();
-        	timer.EisyouReset();
+        	ReturnProcess();
         	return;//タグがないから終わり
         }
         
         
-        NBTTagCompound nbt = holdingItems.getTagCompound();
+        final NBTTagCompound nbt = holdingItems.getTagCompound();
         
         if(nbt==null)return;
         
         latestnbt = nbt;
         
         if (!nbt.hasKey("thelow_item_id")) {
-        	String itemName = GetItemName(nbt);
+        	final String itemName = GetItemName(nbt);
         	if(itemName!=null&&itemName.contains("§6§lおみくじ")) {
-        		List<String> lore = getlore(nbt);
+        		final List<String> lore = getlore(nbt);
             	ShowLores(lore,itemName);
         	}
-        	if(itemName!=null&itemName.startsWith("§7On CoolDown (§r")) {
+        	if(itemName!=null&&itemName.startsWith("§7On CoolDown (§r")) {
         		HUD_render(itemName,0,hudX,hudY);
         	}
-        	timer.YamikaihouReset();
-        	timer.EsuReset();
-        	timer.EisyouReset();
+        	ReturnProcess();
         	return;//idがないなら終わり
         }
-        
+        final String itemid = nbt.getString("thelow_item_id");        
         if (nbt.hasKey("thelow_item_seed_value", 4)) { // 4 = Long型
-            long seed = nbt.getLong("thelow_item_seed_value");
+            final long seed = nbt.getLong("thelow_item_seed_value");
             // seed の変化を検知してトリガー
             if(itemseed == 0L || itemseed != seed) {
             	itemseed = seed;
-            	timer.EisyouReset();
-            	timer.YamikaihouReset();
-            	timer.EsuReset();
+            	ReturnProcess();
             }
         }else {
-        	timer.EisyouReset();
-        	timer.YamikaihouReset();
-        	timer.EsuReset();
+        	ReturnProcess();
         }
         
-        String itemName = GetItemName(nbt);
+        final String itemName = GetItemName(nbt);
         
-        if(itemName==null || itemName=="") {
-        	timer.YamikaihouReset();
-        	timer.EsuReset();
-        	timer.EisyouReset();
+        if(itemName==null || itemName=="" || itemName.isEmpty()) {
+        	ReturnProcess();
         	return;
         }
         
+        final List<String> lore = getlore(nbt);
         
-        
-        List<String> lore = getlore(nbt);
-        
-        
-        
-        if(itemName!=null&&!itemName.isEmpty()) HUD_render(itemName,0,hudX,hudY);
-        
-        if(itemName!=null&&(itemName.contains("メモ")||itemName.contains("リスト"))) {
+        if(itemName.contains("メモ")||itemName.contains("リスト")) {
         	ShowLores(lore,itemName);
-        	timer.YamikaihouReset();
-        	timer.EsuReset();
-        	timer.EisyouReset();return;
+        	ReturnProcess();
+        	return;
         }
         
+        HUD_render(itemName,0,hudX,hudY);
+        
+        if(itemid.startsWith("normal_rod_")||nbt.hasKey("magic_pickaxe_exp")) {
+        	String expline = GetTextInlore(lore,"釣り竿経験値");
+        	if(expline==null) {
+        		expline = GetTextInlore(lore,"ピッケルレベル");
+        	}
+        	if(expline!=null) {
+        		HUD_render(expline,13,hudX,hudY);
+        	}
+        	ReturnProcess();
+        	return;
+        	
+        }
         
         String item_type = "";
         
-        for (String line : lore) {
-            if (line.contains("以上")) {
-            	if (line.contains("剣")) {
-            		item_type = "剣";
-            	}
-            	if (line.contains("弓")) {
-            		item_type = "弓";
-            	}
-            	if (line.contains("魔法")) {
-            		item_type = "魔法";
-            	}
-            }
-            if(line.contains("x:")&&line.contains("y:")&&line.contains("z:")) {//カギとかに書いてある座標系式ならば
-        		HUD_render(line,13,hudX,hudY);//その行を表示する
-        		return;
-        	}
+        final String item_type_line = GetTextInlore(lore,"以上");
+        if(item_type_line==null) {
+        	ReturnProcess();
+        	return;
         }
-        if(item_type == ""||item_type == null || item_type.isEmpty()) {
-        	timer.YamikaihouReset();
-        	timer.EsuReset();
-        	timer.EisyouReset();
+        
+        if(item_type_line.contains("剣"))item_type="剣";
+        if(item_type_line.contains("弓"))item_type="弓";
+        if(item_type_line.contains("魔法"))item_type="魔法";
+        
+        
+        if(item_type == null||item_type.isEmpty()) {
+        	ReturnProcess();
+        	return;
+        }
+        if(item_type == "") {
+        	final String may_posline = GetTextInlore(lore,"x:");
+        	if(may_posline!=null&&may_posline.contains("y:")&&may_posline.contains("z:")) {
+        		HUD_render(may_posline,13,hudX,hudY);
+        	}
+        	ReturnProcess();
         	return;
         }
 
@@ -160,44 +157,43 @@ public class thelow_item_hudHUD extends Gui {
         	level = (int) nbt.getShort("thelow_avaliable_level");//levelに格納
         }
         
-        double[] stones = stonepars(nbt);
+        final double[] stones = stonepars(nbt);
         
 
-        String sskill = skill.getsp(nbt);
+        final String sskill = skill.getsp(nbt);
         String sskillname = skill.getname(sskill);
         
-        if(sskillname!=null) {
-        	if(sskillname.equals("覚醒")){
-        		if(skill.kaihou) {
-        			sskillname = "§a"+sskillname+"§r";
-        		}else {
-        			sskillname = "§8"+sskillname+"§r";
-        			int time = timer.Kaihoutimer();
-        			if(time!=0) {
-        				sskillname = sskillname + time + "秒";
-        			}
+        if(sskillname!=null&&sskillname.equals("覚醒")) {
+       		if(skill.kaihou) {
+       			sskillname = "§a"+sskillname+"§r";
+       		}else {
+        		sskillname = "§8"+sskillname+"§r";
+        		final int time = timer.Kaihoutimer();
+        		if(time!=0) {
+        			sskillname = sskillname + time + "秒";
         		}
         	}
         }
         
-        String nskill = skill.getno(nbt);
+        final String nskill = skill.getno(nbt);
         String nskillname = skill.getname(nskill);
+        /*
         if(nskillname!=null) {
         	if(nskillname.equals("開放")) {
         		if(skill.yochou) {
         			nskillname = "§a"+nskillname+"§r";
         		}else {
         			nskillname = "§8"+nskillname+"§r";
-        			int time = timer.Yochoutimer();
+        			final int time = timer.Yochoutimer();
         			if(time!=0) {
         				nskillname = nskillname + time +"秒";
         			}
         		}
         	}
         }
+        */
         
-        
-        String pskill = skill.getpa(nbt);
+        final String pskill = skill.getpa(nbt);
         pskillname = skill.getpskillname(pskill);
         String pskillnameshow = null;
         if(pskillname!=null) {
@@ -207,7 +203,7 @@ public class thelow_item_hudHUD extends Gui {
                     pskillnameshow = "§a" + pskillname + "§r";
                 } else {
                     pskillnameshow = "§8" + pskillname + "§r";
-                    int time = timer.Yamikaihoutimer();
+                    final int time = timer.Yamikaihoutimer();
                     if (time != 0) {
                         pskillnameshow += time + "秒";
                     }
@@ -219,7 +215,7 @@ public class thelow_item_hudHUD extends Gui {
                     pskillnameshow = "§a" + pskillname + "§r";
                 } else {
                     pskillnameshow = "§8" + pskillname + "§r";
-                    int time = timer.Esutimer();
+                    final int time = timer.Esutimer();
                     if (time != 0) {
                         pskillnameshow += time + "秒";
                     }
@@ -231,7 +227,7 @@ public class thelow_item_hudHUD extends Gui {
                     pskillnameshow = "§a" + pskillname + "§r";
                 } else {
                     pskillnameshow = "§8" + pskillname + "§r";
-                    int time = timer.Eisyoutimer();
+                    final int time = timer.Eisyoutimer();
                     if (time != 0) {
                         pskillnameshow += time + "秒";
                     }
@@ -270,7 +266,7 @@ public class thelow_item_hudHUD extends Gui {
         
         
         
-        String text = item_type+"レベル"+level+"以上";
+        final String text = item_type+"レベル"+level+"以上";
         
         StringBuilder text2Builder = new StringBuilder();
 
@@ -308,12 +304,12 @@ public class thelow_item_hudHUD extends Gui {
         	HUD_render(text3,39,hudX,hudY);
         }
     }
-    public static List<String> getlore(NBTTagCompound nbt){
+    public static List<String> getlore(final NBTTagCompound nbt){
     	List<String> lore = new ArrayList<>();
     	if (nbt.hasKey("display", 10)) { // 10 = NBTTagCompound
-            NBTTagCompound display = nbt.getCompoundTag("display");
+            final NBTTagCompound display = nbt.getCompoundTag("display");
             if (display.hasKey("Lore", 9)) { // 9 = NBTTagList
-                NBTTagList loreList = display.getTagList("Lore", 8); // 8 = String tag
+                final NBTTagList loreList = display.getTagList("Lore", 8); // 8 = String tag
                 for (int i = 0; i < loreList.tagCount(); i++) {
                     lore.add(loreList.getStringTagAt(i));
                 }
@@ -321,13 +317,13 @@ public class thelow_item_hudHUD extends Gui {
         }
     	return lore;
     }
-    public static double[] stonepars(NBTTagCompound nbt) {
+    public static double[] stonepars(final NBTTagCompound nbt) {
     	double[] stones = {1,1,1,100,0};
         if(nbt.hasKey("thelow_item_slot_list")) {//魔法石スロットがあるか
-        	String slot_text_data = nbt.getString("thelow_item_slot_list");//それをStringで取得
-        	String[] slots = slot_text_data.split(",");
+        	final String slot_text_data = nbt.getString("thelow_item_slot_list");//それをStringで取得
+        	final String[] slots = slot_text_data.split(",");
         	if(slots != null && !slot_text_data.isEmpty()) {//データがあるかチェック
-        		for (String slot : slots) {
+        		for (final String slot : slots) {
         			//特攻魔石
             		for(int n = 0;n<=2;n++) {
             			for(int i = 1;i<=5;i++) {
@@ -371,12 +367,13 @@ public class thelow_item_hudHUD extends Gui {
         return stones;
     }
     
-    private static void HUD_render(String text,int dy,int x,int y) {
+    private static void HUD_render(final String text,final int dy,final int x,int y) {
+    	if(text==null)return;
     	FontRenderer font = mc.fontRendererObj;
     	y += dy;
-    	int textWidth = font.getStringWidth(text);
-    	int textHeight = font.FONT_HEIGHT;
-    	int padding = 2;
+    	final int textWidth = font.getStringWidth(text);
+    	final int textHeight = font.FONT_HEIGHT;
+    	final int padding = 2;
     	Gui.drawRect(x - padding, y - padding, x + textWidth + padding, y + textHeight + padding, 0x50000000);
     	
     	
@@ -387,11 +384,11 @@ public class thelow_item_hudHUD extends Gui {
     public static String Getpskillname() {
     	return pskillname;
     }
-    private static String GetItemName(NBTTagCompound nbt) {
+    public static String GetItemName(NBTTagCompound nbt) {
     	String itemName = null;
         
         if (nbt.hasKey("display", 10)) { // 10 = Compound
-            NBTTagCompound display = nbt.getCompoundTag("display");
+            final NBTTagCompound display = nbt.getCompoundTag("display");
             if (display.hasKey("Name", 8)) { // 8 = String
                 itemName = display.getString("Name");
             }
@@ -399,16 +396,16 @@ public class thelow_item_hudHUD extends Gui {
         return itemName;
     }
     
-    private static void ShowLores(List<String> lore,String name) {
-    	int hudX = ConfigHandler.hudX;
-    	int hudY = ConfigHandler.hudY;
+    private static void ShowLores(final List<String> lore,final String name) {
+    	final int hudX = ConfigHandler.hudX;
+    	final int hudY = ConfigHandler.hudY;
     	if(name!=null&&!name.isEmpty()) {
     		HUD_render(name,0,hudX,hudY);
     	}else if(lore==null||lore.isEmpty())return;
     	
     	int di0 = 13;
     	for(int i=0;i<lore.size();i++) {
-    		String loretext = lore.get(i).replaceAll("§.", "");;
+    		final String loretext = lore.get(i).replaceAll("§.", "");;
     		
     		if(loretext!=null&&!loretext.equals(" ")&&!loretext.equals("")&&!loretext.contains("のみ使用可能です。")) {
     		HUD_render(lore.get(i),i*13+di0,hudX,hudY);
@@ -418,5 +415,21 @@ public class thelow_item_hudHUD extends Gui {
     		}
     	}
     	return;
+    }
+    
+    private static void ReturnProcess() {
+    	timer.YamikaihouReset();
+    	timer.EsuReset();
+    	timer.EisyouReset();
+    }
+    
+    public static String GetTextInlore(final List<String> lore, final String Keyword) {
+    	if(lore==null||Keyword==null)return null;
+    	for(String line:lore) {
+    		if(line!=null&&line.contains(Keyword)) {
+    			return line;
+    		}
+    	}
+    	return null;
     }
 }
