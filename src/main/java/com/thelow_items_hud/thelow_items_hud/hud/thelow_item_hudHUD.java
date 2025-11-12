@@ -108,7 +108,19 @@ public class thelow_item_hudHUD extends Gui {
         }
         
         HUD_render(itemName,0,hudX,hudY);
-
+        
+        if(itemid.startsWith("normal_rod_")||nbt.hasKey("magic_pickaxe_exp")) {
+        	String expline = GetTextInlore(lore,"釣り竿経験値");
+        	if(expline==null) {
+        		expline = GetTextInlore(lore,"ピッケルレベル");
+        	}
+        	if(expline!=null) {
+        		HUD_render(expline,13,hudX,hudY);
+        	}
+        	ReturnProcess();
+        	return;
+        	
+        }
         
         String item_type = "";
         
@@ -128,7 +140,7 @@ public class thelow_item_hudHUD extends Gui {
         	return;
         }
         if(item_type == "") {
-        	String may_posline = GetTextInlore(lore,"x:");
+        	final String may_posline = GetTextInlore(lore,"x:");
         	if(may_posline.contains("y:")&&may_posline.contains("z:")) {
         		HUD_render(may_posline,13,hudX,hudY);
         	}
