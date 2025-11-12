@@ -17,6 +17,8 @@ public class ConfigHandler {
     public static int hudX = 5;
     public static int hudY = 5;
     public static boolean hudenable = true;
+    public static int generalSkillhudX = 150;
+    public static int generalSkillhudY = 20;
     public static boolean tooltipenable = true;
     public static boolean getstatus = true;
     public static boolean itemCThudenable = true;
@@ -36,6 +38,8 @@ public class ConfigHandler {
         hudY = config.get(CATEGORY_GENERAL, "hudY", 5, "HUDのY座標").getInt();
         
         hudenable = config.get(CATEGORY_GENERAL, "hudenable", true, "HUDが有効かどうか").getBoolean();
+        generalSkillhudX = config.get(CATEGORY_GENERAL, "generalSkillhudX", 150, "汎用スキル表示のX座標").getInt();
+        generalSkillhudY = config.get(CATEGORY_GENERAL, "generalSkillhudY", 20, "汎用スキル表示のY座標").getInt();
         tooltipenable = config.get(CATEGORY_GENERAL, "tooltipenable", true, "tooltipが有効かどうか").getBoolean();
         getstatus = config.get(CATEGORY_GENERAL, "getstatus", true, "増加値等を自動取得するか").getBoolean();
         
@@ -63,6 +67,8 @@ public class ConfigHandler {
         config.get(CATEGORY_GENERAL, "hudX", 5, "HUDのX座標").set(hudX);
         config.get(CATEGORY_GENERAL, "hudY", 5, "HUDのY座標").set(hudY);
         config.get(CATEGORY_GENERAL, "hudenable", true,"HUDが有効かどうか").set(hudenable);
+        config.get(CATEGORY_GENERAL, "generalSkillhudX", 150, "汎用スキル表示のX座標").set(generalSkillhudX);
+        config.get(CATEGORY_GENERAL, "generalSkillhudY", 20, "汎用スキル表示のY座標").set(generalSkillhudY);
         config.get(CATEGORY_GENERAL, "tooltipenable", true,"tooltipが有効かどうか").set(tooltipenable);
         config.get(CATEGORY_GENERAL, "getstatus", true,"増加値等を自動取得するか").set(getstatus);
         config.get(CATEGORY_GENERAL, "itemCThudenable", true,"アイテムCTを表示するか").set(itemCThudenable);

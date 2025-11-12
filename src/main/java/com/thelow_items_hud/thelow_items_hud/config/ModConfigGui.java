@@ -37,6 +37,8 @@ public class ModConfigGui extends GuiConfig {
         ConfigHandler.hudX = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "hudX", 5).getInt();
         ConfigHandler.hudY = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "hudY", 5).getInt();
         ConfigHandler.hudenable = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "hudenable", true).getBoolean();
+        ConfigHandler.generalSkillhudX = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "generalSkillhudX", 150).getInt();
+        ConfigHandler.generalSkillhudY = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "generalSkillhudY", 20).getInt();
         ConfigHandler.tooltipenable = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "tooltipenable", true).getBoolean();
         ConfigHandler.getstatus = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL, "getstatus", true).getBoolean();
         ConfigHandler.itemCThudenable = ConfigHandler.getConfig().get(ConfigHandler.CATEGORY_GENERAL,"itemCThudenable",true).getBoolean();

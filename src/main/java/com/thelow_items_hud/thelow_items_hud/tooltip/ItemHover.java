@@ -10,8 +10,12 @@ import com.thelow_items_hud.thelow_items_hud.hud.thelow_item_hudHUD;
 import com.thelow_items_hud.thelow_items_hud.skills.APIListener;
 import com.thelow_items_hud.thelow_items_hud.skills.skill;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -22,10 +26,14 @@ class textvalues{
 
 public class ItemHover {
 	
+	private static String generalSkillName = "";
+	
+	private static final FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
 	
 	@SubscribeEvent
     public void onItemTooltip(ItemTooltipEvent event) {
 		
+		generalSkillName = "";
 		if(!Keyclick.enable)return;
 		
         final ItemStack stack = event.itemStack;
@@ -282,9 +290,9 @@ public class ItemHover {
         if(showskilllist.replace(" ", "").equals(""))return;
         for(int i=0;i<tooltip.size();i++) {
         	final String tooltipline = tooltip.get(i);
-        	System.out.println("line"+i+":"+tooltipline);
         	if(tooltipline.equals("§5§o§cShift+「Q」でスキル選択")) {
         		tooltip.add(i+1, "スキル名:"+showskilllist);
+        		generalSkillName = showskilllist;
         	}
         }
     }
@@ -422,5 +430,14 @@ public class ItemHover {
 			CTtext = String.format(textformat,showCTtext,skillcooltime);
 		}
 		return CTtext;
+	}
+	
+	@SubscribeEvent
+    public void onGuiDraw(GuiScreenEvent.DrawScreenEvent.Pre event) {
+		if(generalSkillName.equals(""))return;
+		GlStateManager.pushMatrix();
+        GlStateManager.translate(0.0F, 0.0F, 500.0F);//強制手前表示
+        font.drawStringWithShadow("§fスキル名"+generalSkillName, ConfigHandler.generalSkillhudX,ConfigHandler.generalSkillhudY , 0xFFFFFF);
+        GlStateManager.popMatrix();
 	}
 }
