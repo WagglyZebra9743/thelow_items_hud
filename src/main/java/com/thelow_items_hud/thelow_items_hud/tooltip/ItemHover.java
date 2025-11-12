@@ -41,7 +41,7 @@ public class ItemHover {
         List<String> tooltip = event.toolTip;
        
         final NBTTagCompound nbt = stack.getTagCompound();
-        List<String> lore = thelow_item_hudHUD.getlore(nbt);
+        final List<String> lore = thelow_item_hudHUD.getlore(nbt);
         if(lore==null||lore.isEmpty()) return;
         int item_type = -1;
         
@@ -254,7 +254,7 @@ public class ItemHover {
             return;
         }
             
-       textvalues mob_damages =create_damage(nbt,item_type,"基礎ダメージ");
+       final textvalues mob_damages =create_damage(nbt,item_type,"基礎ダメージ");
         
        int addplace = 0;
             
@@ -437,7 +437,7 @@ public class ItemHover {
 		if(generalSkillName.equals(""))return;
 		GlStateManager.pushMatrix();
         GlStateManager.translate(0.0F, 0.0F, 500.0F);//強制手前表示
-        font.drawStringWithShadow("§fスキル名"+generalSkillName, ConfigHandler.generalSkillhudX,ConfigHandler.generalSkillhudY , 0xFFFFFF);
+        font.drawStringWithShadow("§fスキル名:"+generalSkillName, ConfigHandler.generalSkillhudX,ConfigHandler.generalSkillhudY , 0xFFFFFF);
         GlStateManager.popMatrix();
 	}
 }

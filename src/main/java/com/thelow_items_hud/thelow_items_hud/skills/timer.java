@@ -79,9 +79,9 @@ public class timer {
 	public void Esuchek(TickEvent.ClientTickEvent event) {
 		if (mc.thePlayer == null || mc.theWorld == null) return;
 		if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("エース")) {
-			EntityPlayerSP player = mc.thePlayer;
+			final EntityPlayerSP player = mc.thePlayer;
 	    
-	    	BlockPos currentPos = player.getPosition();
+	    	final BlockPos currentPos = player.getPosition();
 	    	if (lastPos == null) {
 	        	lastPos = currentPos;
 	        	return;
@@ -139,7 +139,7 @@ public class timer {
 		YamikaihouReset();
 		EsuReset();
 		EisyouReset();
-		EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+		final EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 		 if (player != null) {
 	            player.sendChatMessage("/thelow_api subscribe SKILL_COOLTIME");
 	        }
