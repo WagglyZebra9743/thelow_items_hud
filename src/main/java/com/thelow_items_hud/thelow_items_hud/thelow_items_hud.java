@@ -43,9 +43,10 @@ public class thelow_items_hud {
         File configFile = event.getSuggestedConfigurationFile();
         ConfigHandler.loadConfig(configFile);
         
-    //  イベントから ModMetadata を取得
+        //  イベントから ModMetadata を取得
         ModMetadata meta = event.getModMetadata();
         
+        if(meta==null)return;
         // modid を取得
         MOD_ID = meta.modId;
         
