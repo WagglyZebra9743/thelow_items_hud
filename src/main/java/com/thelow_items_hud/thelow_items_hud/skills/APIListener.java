@@ -206,7 +206,7 @@ public class APIListener {
     private static void SendVersionText() {
 		if(thelow_items_hud.latestver.equals(""))return;
 		version_Checked = true;
-		int status = thelow_items_hud.the_status;
+		final int status = thelow_items_hud.the_status;
 		if(thelow_items_hud.CustomMsg!=null&&!thelow_items_hud.CustomMsg.equals("")&&!thelow_items_hud.CustomMsg.equals("OK")) {
 			sendchat("§a[thelow_quest_helper]" + thelow_items_hud.CustomMsg,mc.thePlayer);
 		}

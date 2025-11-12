@@ -423,7 +423,7 @@ public class thelow_item_hudHUD extends Gui {
     	timer.EisyouReset();
     }
     
-    private static String GetTextInlore(final List<String> lore, final String Keyword) {
+    public static String GetTextInlore(final List<String> lore, final String Keyword) {
     	if(lore==null||Keyword==null)return null;
     	for(String line:lore) {
     		if(line!=null&&line.contains(Keyword)) {

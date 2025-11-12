@@ -238,42 +238,41 @@ public class skill {
 	
 	private boolean AttackKeyDown = false;
 	
-	public static String getsp(NBTTagCompound nbt) {
+	public static String getsp(final NBTTagCompound nbt) {
 		if (nbt.hasKey("thelow_item_weapon_skill_special_skill")) {//スキルデータがあるかをチェック
-        	String skill = nbt.getString("thelow_item_weapon_skill_special_skill");//格納
+        	final String skill = nbt.getString("thelow_item_weapon_skill_special_skill");//格納
         	if(skill.equals("skill_cancel"))return null;
-        	String skillset = nbt.getString("thelow_item_weapon_skill_set_id");
-        	String skillid = skillset+skill;
+        	final String skillset = nbt.getString("thelow_item_weapon_skill_set_id");
+        	final String skillid = skillset+skill;
         	return skillid;
         }
 		return null;
 	}
-	public static String getno(NBTTagCompound nbt) {
+	public static String getno(final NBTTagCompound nbt) {
 		if (nbt.hasKey("thelow_item_weapon_skill_normal_skill")) {//スキルデータがあるかをチェック
-        	String skill = nbt.getString("thelow_item_weapon_skill_normal_skill");//格納
+        	final String skill = nbt.getString("thelow_item_weapon_skill_normal_skill");//格納
         	if(skill.equals("skill_cancel"))return null;
-        	if (nbt.hasKey("thelow_item_weapon_skill_set_id")) {
-        	String skillset = nbt.getString("thelow_item_weapon_skill_set_id");
-        	String skillid = skillset+skill;
+        	if (!nbt.hasKey("thelow_item_weapon_skill_set_id"))return skill;
+        	final String skillset = nbt.getString("thelow_item_weapon_skill_set_id");
+        	final String skillid = skillset+skill;
         	return skillid;
-        	}else return skill;
         }
 		return null;
 	}
-	public static String getpa(NBTTagCompound nbt) {
+	public static String getpa(final NBTTagCompound nbt) {
 		if(nbt.hasKey("thelow_item_weapon_skill_set_id")) {
-			String skillid = nbt.getString("thelow_item_weapon_skill_set_id");
+			final String skillid = nbt.getString("thelow_item_weapon_skill_set_id");
 			return skillid;
 		}
 		return null;
 	}
-	public static String getname(String skill) {
-		String skillname = skillMap.getOrDefault(skill,null);
+	public static String getname(final String skill) {
+		final String skillname = skillMap.getOrDefault(skill,null);
 		return skillname;
 	}
 	
-	public static String getpskillname(String skill) {
-		String skillname = skillMap.getOrDefault(skill,null);
+	public static String getpskillname(final String skill) {
+		final String skillname = skillMap.getOrDefault(skill,null);
 		if(skillname==null)return null;
 		if(skillname.equals("闇の解放")) {
 			timer.Yamikaihou();
@@ -296,7 +295,7 @@ public class skill {
 	@SubscribeEvent
 	public void onAttackEntity(AttackEntityEvent  event) {
 	    if (event.entityPlayer == mc.thePlayer) {
-	    	String skillname = thelow_item_hudHUD.Getpskillname();
+	    	final String skillname = thelow_item_hudHUD.Getpskillname();
 	    	if(skillname!=null) {
 	    		switch (skillname) {
 	    		case "闇の解放":{
@@ -319,7 +318,7 @@ public class skill {
 	    if (event.phase != TickEvent.Phase.END) return;
 
 	    
-	    KeyBinding attackKey = mc.gameSettings.keyBindAttack;
+	    final KeyBinding attackKey = mc.gameSettings.keyBindAttack;
 
 	    // 攻撃キーが押された瞬間だけ
 	    if (attackKey.isKeyDown() && !AttackKeyDown) {
@@ -357,10 +356,10 @@ public class skill {
 		if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("エース")) {
     			// アクションバーがボス判定かどうか判定
     			if (event.type == 2) { // 2 = アクションバー
-    				String text = event.message.getUnformattedText();
+    				final String text = event.message.getUnformattedText();
 	        
     				// ボス名判定
-    			if (text.contains("§c【")) {
+    			if (text!=null&&text.contains("§c【")) {
     				timer.EsuReset();
     			}
 	        }
