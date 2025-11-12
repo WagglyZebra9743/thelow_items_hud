@@ -34,7 +34,7 @@ public class APIListener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChat(ClientChatReceivedEvent event) {
-        
+        if(event.message==null)return;
         String msg = event.message.getUnformattedText();
     	final String colormsg = event.message.getFormattedText();
     	if(!version_Checked&&ConfigHandler.AutoVersionCheck&&colormsg.startsWith("§r§a倉庫データを取得しました")) {
@@ -105,6 +105,7 @@ public class APIListener {
     
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void APIcancel(ClientChatReceivedEvent event) {
+    	if(event.message==null)return;
         final String message = event.message.getUnformattedText(); // 色コードや装飾を除去したテキスト
         
         final String colormsg = event.message.getFormattedText();

@@ -42,6 +42,7 @@ public class InventoryParkSelector{
 		}
 		
 		final GuiContainer gui = (GuiContainer) event.gui;
+		if(gui==null)return;
 		final Container container = gui.inventorySlots;
 
 		if(!ChecktheContainerIsPerkSelector(container)) {
@@ -84,11 +85,14 @@ public class InventoryParkSelector{
     }
     
 	private static boolean ChecktheContainerIsPerkSelector(Container container) {
+		if(container==null)return false;
 		if (!(container instanceof ContainerChest))return false;
 		
 		//開いたUIの名前を取得する
 		final IInventory chestInventory = ((ContainerChest) container).getLowerChestInventory();
+		if(chestInventory==null)return false;
 		final String guiTitle = StringUtils.stripControlCodes(chestInventory.getDisplayName().getUnformattedText());
+		if(guiTitle==null)return false;
 		
 		//パークメニューかを確認
 		if (!(guiTitle.contains("Perk Selector")))return false;
