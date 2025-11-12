@@ -141,7 +141,7 @@ public class thelow_item_hudHUD extends Gui {
         }
         if(item_type == "") {
         	final String may_posline = GetTextInlore(lore,"x:");
-        	if(may_posline.contains("y:")&&may_posline.contains("z:")) {
+        	if(may_posline!=null&&may_posline.contains("y:")&&may_posline.contains("z:")) {
         		HUD_render(may_posline,13,hudX,hudY);
         	}
         	ReturnProcess();
@@ -368,6 +368,7 @@ public class thelow_item_hudHUD extends Gui {
     }
     
     private static void HUD_render(final String text,final int dy,final int x,int y) {
+    	if(text==null)return;
     	FontRenderer font = mc.fontRendererObj;
     	y += dy;
     	final int textWidth = font.getStringWidth(text);

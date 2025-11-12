@@ -51,12 +51,12 @@ public class APIListener {
             String[] split = msg.split(" ", 2);
             if (split.length == 2) {
                 try {
-                	JsonObject json = new JsonParser().parse(split[1]).getAsJsonObject();
+                	final JsonObject json = new JsonParser().parse(split[1]).getAsJsonObject();
                 	if(json==null||json.isJsonNull()||!json.has("apiType")||!json.has("response"))return;
-                    String apiType = json.get("apiType").getAsString();
+                    final String apiType = json.get("apiType").getAsString();
                     if(apiType==null||apiType.equals("")||apiType.isEmpty())return;
                     if ("skill_cooltime".equals(apiType)) {
-                        JsonObject response = json.getAsJsonObject("response");
+                        final JsonObject response = json.getAsJsonObject("response");
                         if(response==null||!response.has("name"))return;
                         String skillname = response.get("name").getAsString();
                         if(skillname!=null) {
@@ -77,7 +77,7 @@ public class APIListener {
                     }
                      if("detailed_status".equals(apiType)) {
                     	 if(!ConfigHandler.getstatus&&json!=null&&!json.has("response"))return;
-                    	 JsonObject response = json.getAsJsonObject("response");
+                    	 final JsonObject response = json.getAsJsonObject("response");
                     	 if(response==null||!response.has("overStrengthSword")||!response.has("overStrengthBow")||!response.has("overStrengthMagic"))return;
                     	 ConfigHandler.overStrength[0] = response.get("overStrengthSword").getAsDouble();
                     	 ConfigHandler.overStrength[0]+=1;
@@ -89,10 +89,10 @@ public class APIListener {
                     	 ConfigHandler.save();
                      }
                      if("item_cooltime".equals(apiType)) {
-                    	 JsonObject response = json.getAsJsonObject("response");
+                    	 final JsonObject response = json.getAsJsonObject("response");
                          if(response==null||!response.has("itemId")||!response.has("cooltime"))return;
                          itemID = response.get("itemId").getAsString();
-                         int cooltimetick = (int) response.get("cooltime").getAsDouble()*20;
+                         final int cooltimetick = (int) response.get("cooltime").getAsDouble()*20;
                          timer.itemCTtimer = cooltimetick;
                      }
                      
@@ -105,9 +105,9 @@ public class APIListener {
     
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void APIcancel(ClientChatReceivedEvent event) {
-        String message = event.message.getUnformattedText(); // 色コードや装飾を除去したテキスト
+        final String message = event.message.getUnformattedText(); // 色コードや装飾を除去したテキスト
         
-        String colormsg = event.message.getFormattedText();
+        final String colormsg = event.message.getFormattedText();
         if(!flags[0]&&colormsg.equals("§r§a正常にプレイヤーデータをロードしました。§r")) {
         	timer.Reconnected();
         	status_getted = false;
