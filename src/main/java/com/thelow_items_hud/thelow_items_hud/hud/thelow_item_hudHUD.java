@@ -119,8 +119,14 @@ public class thelow_item_hudHUD extends Gui {
         	}
         	ReturnProcess();
         	return;
-        	
         }
+        
+        final String may_posline = GetTextInlore(lore,"x:");
+    	if(may_posline!=null&&may_posline.contains("y:")&&may_posline.contains("z:")) {
+    		HUD_render(may_posline,13,hudX,hudY);
+    		ReturnProcess();
+        	return;
+    	}
         
         String item_type = "";
         
@@ -136,14 +142,6 @@ public class thelow_item_hudHUD extends Gui {
         
         
         if(item_type == null||item_type.isEmpty()) {
-        	ReturnProcess();
-        	return;
-        }
-        if(item_type == "") {
-        	final String may_posline = GetTextInlore(lore,"x:");
-        	if(may_posline!=null&&may_posline.contains("y:")&&may_posline.contains("z:")) {
-        		HUD_render(may_posline,13,hudX,hudY);
-        	}
         	ReturnProcess();
         	return;
         }
