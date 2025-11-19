@@ -35,7 +35,7 @@ public class APIListener {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChat(ClientChatReceivedEvent event) {
         if(event.message==null)return;
-        String msg = event.message.getUnformattedText();
+        final String msg = event.message.getUnformattedText();
     	final String colormsg = event.message.getFormattedText();
     	if(!version_Checked&&ConfigHandler.AutoVersionCheck&&colormsg.startsWith("§r§a倉庫データを取得しました")) {
     		SendVersionText();
@@ -46,60 +46,30 @@ public class APIListener {
         	mc.thePlayer.sendChatMessage("/thelow_api detailed_status");
         	flags[2] = false;
         }
-        
-        if (msg.startsWith("$api")) {
-            String[] split = msg.split(" ", 2);
-            if (split.length == 2) {
-                try {
-                	final JsonObject json = new JsonParser().parse(split[1]).getAsJsonObject();
-                	if(json==null||json.isJsonNull()||!json.has("apiType")||!json.has("response"))return;
-                    final String apiType = json.get("apiType").getAsString();
-                    if(apiType==null||apiType.equals("")||apiType.isEmpty())return;
-                    if ("skill_cooltime".equals(apiType)) {
-                        final JsonObject response = json.getAsJsonObject("response");
-                        if(response==null||!response.has("name"))return;
-                        String skillname = response.get("name").getAsString();
-                        if(skillname!=null) {
-                        if(skillname.equals("予兆")) {
-                        	timer.Yochou();
-                        }
-                        if(skillname.equals("開放")) {
-                        	timer.Kaihou();
-                        }
-                        if(skillname.equals("覚醒")) {
-                        	skill.kaihou = false;
-                        }
-                        if(skillname.equals("マジックボール")||skillname.equals("ライトニングボルト")||skillname.equals("ファイヤ・ボルケーノ")||skillname.equals("メテオストライク")) {
-                        	timer.EisyouReset();
-                        }
-                        skillname=null;
-                        }
-                    }
-                     if("detailed_status".equals(apiType)) {
-                    	 if(!ConfigHandler.getstatus&&json!=null&&!json.has("response"))return;
-                    	 final JsonObject response = json.getAsJsonObject("response");
-                    	 if(response==null||!response.has("overStrengthSword")||!response.has("overStrengthBow")||!response.has("overStrengthMagic"))return;
-                    	 ConfigHandler.overStrength[0] = response.get("overStrengthSword").getAsDouble();
-                    	 ConfigHandler.overStrength[0]+=1;
-                    	 ConfigHandler.overStrength[1] = response.get("overStrengthBow").getAsDouble();
-                    	 ConfigHandler.overStrength[1]+=1;
-                    	 ConfigHandler.overStrength[2] = response.get("overStrengthMagic").getAsDouble();
-                    	 ConfigHandler.overStrength[2]+=1;
-                    	 status_getted = true;
-                    	 ConfigHandler.save();
-                     }
-                     if("item_cooltime".equals(apiType)) {
-                    	 final JsonObject response = json.getAsJsonObject("response");
-                         if(response==null||!response.has("itemId")||!response.has("cooltime"))return;
-                         itemID = response.get("itemId").getAsString();
-                         final int cooltimetick = (int) response.get("cooltime").getAsDouble()*20;
-                         timer.itemCTtimer = cooltimetick;
-                     }
-                     
-                } catch (Exception e) {
-                    mc.thePlayer.addChatMessage(new ChatComponentText("§a[thelow_items_hud]§c 解析失敗: " + e.getMessage()));
-                }
+        if(!msg.startsWith("$api"))return;
+        final String[] split = msg.split(" ", 2);
+        if(split.length != 2)return;
+        try {
+            final JsonObject json = new JsonParser().parse(split[1]).getAsJsonObject();
+            if(json==null||json.isJsonNull()||!json.has("apiType")||!json.has("response"))return;
+            final JsonObject response = json.getAsJsonObject("response");
+            final String apiType = json.get("apiType").getAsString();
+            if(apiType==null||apiType.equals("")||apiType.isEmpty())return;
+            
+            if ("skill_cooltime".equals(apiType)) {
+            	APISkillCT(response);
             }
+            
+            if("detailed_status".equals(apiType)) {
+            	APIStatus(response);
+            }
+            
+            if("item_cooltime".equals(apiType)) {
+            	APIItemCT(response);
+            }
+             
+        } catch (Exception e) {
+            mc.thePlayer.addChatMessage(new ChatComponentText("§a[thelow_items_hud]§c 解析失敗: " + e.getMessage()));
         }
     }
     
@@ -191,7 +161,7 @@ public class APIListener {
 
         ChatStyle style = new ChatStyle();
         
-        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
+        final ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
         style.setChatClickEvent(clickEvent);
         
         style.setColor(EnumChatFormatting.AQUA); // 水色にする
@@ -237,5 +207,51 @@ public class APIListener {
 				return;
 			}
 		}
+    }
+    
+    private static void APISkillCT(final JsonObject response) {
+        if(!response.has("name"))return;
+        final String skillname = response.get("name").getAsString();
+        if(skillname==null)return;
+        switch(skillname){
+        	case "予兆":{
+        		timer.Yochou();
+        		break;
+        	}
+        	case "開放":{
+        		timer.Kaihou();
+        		break;
+        	}
+        	case "覚醒":{
+        		skill.kaihou = false;
+        		break;
+        	}
+        	case "マジックボール":
+        	case "ライトニングボルト":
+        	case "ファイヤ・ボルケーノ":
+        	case "メテオストライク":
+        		timer.EisyouReset();
+        		break;
+        }
+    }
+    
+    private static void APIStatus(final JsonObject response) {
+        if(!ConfigHandler.getstatus)return;
+        if(!response.has("overStrengthSword")||!response.has("overStrengthBow")||!response.has("overStrengthMagic"))return;
+        ConfigHandler.overStrength[0] = response.get("overStrengthSword").getAsDouble();
+        ConfigHandler.overStrength[0]+=1;
+        ConfigHandler.overStrength[1] = response.get("overStrengthBow").getAsDouble();
+        ConfigHandler.overStrength[1]+=1;
+        ConfigHandler.overStrength[2] = response.get("overStrengthMagic").getAsDouble();
+        ConfigHandler.overStrength[2]+=1;
+        status_getted = true;
+        ConfigHandler.save();
+    }
+    
+    private static void APIItemCT(final JsonObject response) {
+        if(!response.has("itemId")||!response.has("cooltime"))return;
+        itemID = response.get("itemId").getAsString();
+        final int cooltimetick = (int) response.get("cooltime").getAsDouble()*20;
+        timer.itemCTtimer = cooltimetick;
     }
 }

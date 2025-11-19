@@ -426,8 +426,8 @@ public class ItemHover {
 		theskillcooltime+=activatetime;
 		if(currentskillcooltime==theskillcooltime)return null;
 		String CTtext = showCTtext;
-		if(theskillcooltime+activatetime!=0) {
-			CTtext = String.format(textformat,showCTtext,skillcooltime);
+		if(theskillcooltime!=0) {
+			CTtext = String.format(textformat,showCTtext,theskillcooltime);
 		}
 		return CTtext;
 	}
