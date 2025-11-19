@@ -27,7 +27,7 @@ import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = "thelow_items_hud", version = "1.6",guiFactory = "com.thelow_items_hud.thelow_items_hud.config.GuiFactory")
+@Mod(modid = "thelow_items_hud", version = "1.7",guiFactory = "com.thelow_items_hud.thelow_items_hud.config.GuiFactory")
 public class thelow_items_hud {
 	
 	public static String MOD_ID;
@@ -78,7 +78,7 @@ public class thelow_items_hud {
         // ネットワーク処理は重たいため、必ず別スレッドで実行する
         new Thread(() -> {
             
-            System.out.println("[thelow_items_hud]最新バージョンの確認します...");
+            System.out.println("[thelow_items_hud]最新バージョンを確認します...");
             VersionResponse apiResponse = getVersionData();
 
             if (apiResponse == null) {

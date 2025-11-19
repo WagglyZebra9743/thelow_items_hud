@@ -134,10 +134,12 @@ public class item_hud extends CommandBase {
             return getListOfStringsMatchingLastWord(args, options.toArray(new String[0]));
         }
         if(args.length == 2) {
-        	List<String> options = new ArrayList<>();
-        	options.add("on");
-        	options.add("off");
-        	return getListOfStringsMatchingLastWord(args,options.toArray(new String[0]));
+        	if(args[1].equals("hud")||args[1].equals("tooltip")) {
+        		List<String> options = new ArrayList<>();
+            	options.add("on");
+            	options.add("off");
+            	return getListOfStringsMatchingLastWord(args,options.toArray(new String[0]));
+        	}
         }
         
         return null;

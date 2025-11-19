@@ -169,6 +169,11 @@ public class skill {
 		skillMap.put("55","古代の契約");
 		skillMap.put("55wskill135","トリスタン");
 		skillMap.put("55wskill55_1","覇者の残骸");
+		skillMap.put("56skill1","ライトニングオーダー");
+		skillMap.put("56wskill19-2","飛閃");
+		skillMap.put("56wskill55_1","覇者の残骸");
+		skillMap.put("56wskill92-2","古代の契約");//多分パッシブ
+		skillMap.put("56wskill135","トリスタン");
 		skillMap.put("57wskill3","パリィ");
 		skillMap.put("60wsikll54_1","勝者の制約");
 		skillMap.put("60wskill54_2","crash");
@@ -204,6 +209,8 @@ public class skill {
 		skillMap.put("79wskill195","アウトバースト");
 		skillMap.put("79wskill196","シータ・リュラエ");
 		skillMap.put("79","オービタリティ");
+		skillMap.put("85wskill214", "蒼閃");
+		skillMap.put("85wskill215", "星鎖");
 		skillMap.put("yhj-ws1wskill3","パリィ(改)");
 		skillMap.put("yhj-ws2wskill20","バーサーク(改)");
 		skillMap.put("yhj-ws3wskill52","死の宣告(改)");
@@ -294,21 +301,18 @@ public class skill {
 	//攻撃判定
 	@SubscribeEvent
 	public void onAttackEntity(AttackEntityEvent  event) {
-	    if (event.entityPlayer == mc.thePlayer) {
-	    	final String skillname = thelow_item_hudHUD.Getpskillname();
-	    	if(skillname!=null) {
-	    		switch (skillname) {
-	    		case "闇の解放":{
-	    			timer.YamikaihouReset();
-	    			break;
-	    			}
-	    		case "エース":{
-	    			timer.EsuReset();
-	    			break;
-	    			}
-	    		}
+		if (event.entityPlayer != mc.thePlayer)return;
+	    final String skillname = thelow_item_hudHUD.Getpskillname();
+	    if(skillname==null)return;
+	    switch (skillname) {
+	    	case "闇の解放":{
+	    		timer.YamikaihouReset();
+	    		break;
 	    	}
-				
+	    	case "エース":{
+	    		timer.EsuReset();
+	    		break;
+	    	}
 	    }
 	}
 	
@@ -334,37 +338,26 @@ public class skill {
 	}
 	private void onAttackKeyPressed() {
 	    // 攻撃キーを押した瞬間に実行したい処理
-		if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("詠唱")) {
-    		timer.EisyouReset();
-    		
-    	}
+		if(thelow_item_hudHUD.Getpskillname()==null||!thelow_item_hudHUD.Getpskillname().equals("詠唱"))return;
+    	timer.EisyouReset();
 	}
 
 	//被ダメ判定
 	@SubscribeEvent
 	public void onDamage(LivingHurtEvent event) {
 	    EntityPlayerSP player = mc.thePlayer;
-	    if (event.entity == player) {
-	    	if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("エース")) {
-	    		timer.EsuReset();
-	    		
-	    	}
-	    }
+	    if(event.entity!=player||thelow_item_hudHUD.Getpskillname()==null||!thelow_item_hudHUD.Getpskillname().equals("エース"))return;
+	    timer.EsuReset();
 	}
 	@SubscribeEvent
 	public void onActionBar(ClientChatReceivedEvent event) {
-		if(thelow_item_hudHUD.Getpskillname()!=null&&thelow_item_hudHUD.Getpskillname().equals("エース")) {
+		if(event.type!=2||thelow_item_hudHUD.Getpskillname()==null||!thelow_item_hudHUD.Getpskillname().equals("エース"))return;
     			// アクションバーがボス判定かどうか判定
-    			if (event.type == 2) { // 2 = アクションバー
-    				final String text = event.message.getUnformattedText();
-	        
-    				// ボス名判定
-    			if (text!=null&&text.contains("§c【")) {
-    				timer.EsuReset();
-    			}
-	        }
-	    }
+   		final String text = event.message.getFormattedText();
+	    
+   		// ボス名判定
+    	if (text!=null&&text.contains("§c 【")) {
+    		timer.EsuReset();
+    	}
 	}
-	
-	
 }
