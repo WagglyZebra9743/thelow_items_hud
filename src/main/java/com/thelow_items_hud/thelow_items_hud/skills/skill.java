@@ -105,6 +105,10 @@ public class skill {
 		skillMap.put("32wskill126","隠密");
 		skillMap.put("32wskill127","ホーリーブラッド");
 		skillMap.put("32","闇の呪縛");
+		skillMap.put("32-2wskill125","恵みの泉");
+		skillMap.put("32-2wskill126","隠密");
+		skillMap.put("32-2wskill127","ホーリーブラッド");
+		skillMap.put("32-2","闇の呪縛");
 		skillMap.put("33wskill103","鎮火");
 		skillMap.put("33","炎の極意");
 		skillMap.put("33wskill131","大火炎");
@@ -207,8 +211,12 @@ public class skill {
 		skillMap.put("76","煌雷");//勝手にパッシブと予想
 		skillMap.put("79wskill194","ゼータ・リュラエ");
 		skillMap.put("79wskill195","アウトバースト");
-		skillMap.put("79wskill196","シータ・リュラエ");
-		skillMap.put("79","オービタリティ");
+		//skillMap.put("79wskill196","シータ・リュラエ");
+		skillMap.put("79wskill197","シータ・リュラエ");
+		skillMap.put("84wskill210", "ホーリーグレイス");
+		skillMap.put("84wskill211", "血力変換");
+		skillMap.put("84wskill212", "ストラテジカル・リコンストラクション");
+		skillMap.put("84wskill213", "福徳");
 		skillMap.put("85wskill214", "蒼閃");
 		skillMap.put("85wskill215", "星鎖");
 		skillMap.put("yhj-ws1wskill3","パリィ(改)");
