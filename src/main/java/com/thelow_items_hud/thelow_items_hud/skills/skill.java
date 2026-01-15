@@ -24,6 +24,18 @@ public class skill {
 		skillMap.put("1wskill2","剣舞");
 		skillMap.put("1wskill3","パリィ");
 		skillMap.put("1wskill4","デスダンス");
+		skillMap.put("1-2","華麗なる剣技");
+		skillMap.put("1-2wskill2","剣舞");
+		skillMap.put("1-2wskill3","パリィ");
+		skillMap.put("1-2wskill4","デスダンス");
+		skillMap.put("1-3","華麗なる剣技");
+		skillMap.put("1-3wskill2","剣舞");
+		skillMap.put("1-3wskill3","パリィ");
+		skillMap.put("1-3wskill4","デスダンス");
+		skillMap.put("1-4","華麗なる剣技");
+		skillMap.put("1-4wskill2","剣舞");
+		skillMap.put("1-4wskill3","パリィ");
+		skillMap.put("1-4wskill4","デスダンス");
 		skillMap.put("2","禁忌の力");
 		skillMap.put("2wskill6","予兆");
 		skillMap.put("2wskill7","開放");

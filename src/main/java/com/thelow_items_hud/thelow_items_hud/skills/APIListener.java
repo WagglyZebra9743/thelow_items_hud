@@ -52,8 +52,9 @@ public class APIListener {
         try {
             final JsonObject json = new JsonParser().parse(split[1]).getAsJsonObject();
             if(json==null||json.isJsonNull()||!json.has("apiType")||!json.has("response"))return;
-            final JsonObject response = json.getAsJsonObject("response");
             final String apiType = json.get("apiType").getAsString();
+            if("dungeon".equals(apiType))return;//responseがJsonじゃないことがあるから何もしたくない
+            final JsonObject response = json.getAsJsonObject("response");
             if(apiType==null||apiType.equals("")||apiType.isEmpty())return;
             
             if ("skill_cooltime".equals(apiType)) {
